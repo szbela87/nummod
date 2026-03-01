@@ -108,7 +108,7 @@ $$\Vert A\Vert_F^2=\mathrm{tr}(A^TA)=\sum_{i=1}^n \lambda_i(A^TA).$$
 
 Kész.
 
-*(Ekvivalensen: $$\lambda_i(A^TA)=\sigma_i(A)^2$$, így $$\Vert A\Vert_F^2=\sum_i \sigma_i(A)^2$$.)*
+(Ekvivalensen: $$\lambda_i (A^T A)=\sigma_i (A)^2 $$, így $$\Vert A\Vert_F^2=\sum_i \sigma_i ( A^2 ) $$.)
 
 ---
 
