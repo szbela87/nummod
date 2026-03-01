@@ -9,7 +9,7 @@ a **Frobenius-norma**
 
 $$\|A\|_F:=\Big(\sum_{i,j}|a_{ij}|^2\Big)^{1/2}.$$
 
-Továbbá $Q$ ortogonális/unitér: $Q^TQ=I$ (illetve $Q^*Q=I$).
+Továbbá $Q$ ortogonális/unitér: $Q^TQ=I$ (illetve $Q^TQ=I$).
 
 ---
 
@@ -17,13 +17,13 @@ Továbbá $Q$ ortogonális/unitér: $Q^TQ=I$ (illetve $Q^*Q=I$).
 
 **Bizonyítás.** Normális mátrixra a spektráltétel szerint létezik unitér $U$ és diagonális $\Lambda=\mathrm{diag}(\lambda_1,\dots,\lambda_n)$, hogy
 
-$$A=U\Lambda U^*.$$
+$$A=U\Lambda U^T.$$
 
 Ekkor
 
-$$\|A\|_2=\|U\Lambda U^*\|_2.$$
+$$\|A\|_2=\|U\Lambda U^T\|_2.$$
 
-A (b) pontból (unitér invariancia) majd következik, hogy $\|U\Lambda U^*\|_2=\|\Lambda\|_2$, tehát $\|A\|_2=\|\Lambda\|_2$.
+A (b) pontból (unitér invariancia) majd következik, hogy $\|U\Lambda U^T\|_2=\|\Lambda\|_2$, tehát $\|A\|_2=\|\Lambda\|_2$.
 
 Diagonális $\Lambda$-ra:
 
@@ -48,7 +48,7 @@ Kész.
 
 ### (b1) $\|Qx\|_2=\|x\|_2$.
 
-$$\|Qx\|_2^2=(Qx)^T *(Qx)=x^T *(Q^*Q)x=x^T *Ix=\|x\|_2^2.$$
+$$\|Qx\|_2^2=(Qx)^T *(Qx)=x^T *(Q^TQ)x=x^T *Ix=\|x\|_2^2.$$
 
 ### (b2) $\|Q\|_2=1$.
 
@@ -66,7 +66,7 @@ Jobbról:
 
 $$\|AQ\|_2=\max_{\|x\|_2=1}\|AQx\|_2.$$
 
-Tedd $y=Qx$. Ekkor $\|y\|_2=\|x\|_2=1$ és $x=Q^*y$, tehát a $\{Qx:\|x\|=1\}$ halmaz épp a gömb:
+Tedd $y=Qx$. Ekkor $\|y\|_2=\|x\|_2=1$ és $x=Q^Ty$, tehát a $\{Qx:\|x\|=1\}$ halmaz épp a gömb:
 
 $$\|AQ\|_2=\max_{\|y\|_2=1}\|Ay\|_2=\|A\|_2.$$
 
@@ -88,11 +88,11 @@ $$\mathrm{tr}(A^TA)=\sum_{k=1}^n (A^TA)_{kk} =\sum_{k=1}^n\sum_{i=1}^n |a_{ik}|^
 
 Balról:
 
-$$\|QA\|_F^2=\mathrm{tr}\big((QA)^*(QA)\big) =\mathrm{tr}(A^*Q^*QA) =\mathrm{tr}(A^*A)=\|A\|_F^2.$$
+$$\|QA\|_F^2=\mathrm{tr}\big((QA)^T (QA)\big) =\mathrm{tr}(A^TQ^TQA) =\mathrm{tr}(A^TA)=\|A\|_F^2.$$
 
 Jobbról:
 
-$$\|AQ\|_F^2=\mathrm{tr}\big((AQ)^*(AQ)\big) =\mathrm{tr}(Q^*A^*AQ) =\mathrm{tr}(A^*AQ Q^*) =\mathrm{tr}(A^*A)=\|A\|_F^2.$$
+$$\|AQ\|_F^2=\mathrm{tr}\big((AQ)^T (AQ)\big) =\mathrm{tr}(Q^T A^T AQ) =\mathrm{tr}(A^T AQ Q^T ) =\mathrm{tr}(A^T A)=\|A\|_F^2.$$
 
 ---
 
