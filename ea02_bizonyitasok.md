@@ -1,159 +1,255 @@
-# Mátrixnormák tulajdonságai — bizonyítások
+# Mátrixnormák tulajdonságai - bizonyítások
 
-Legyen $$A\in\mathbb{R}^{n\times n}$$ (vagy $$\mathbb{C}^{n\times n}$$), és a **kettes mátrixnorma**
+Legyen $$A \in \mathbb{R}^{n \times n}$$ (illetve komplex esetben $$A \in \mathbb{C}^{n \times n}$$), és a **kettes mátrixnorma**
 
-$$\Vert A\Vert_2:=\max_{x\neq 0}\frac{\Vert Ax\Vert_2}{\Vert x\Vert_2} =\max_{\Vert x\Vert_2=1}\Vert Ax\Vert_2,$$
+$$
+\lVert A \rVert_2 := \max_{x \neq 0} \frac{\lVert Ax \rVert_2}{\lVert x \rVert_2}
+= \max_{\lVert x \rVert_2 = 1} \lVert Ax \rVert_2,
+$$
 
-a **spektrálsugár** $$\rho(A):=\max\{|\lambda|:\lambda\in\sigma(A)\}$$,
-a **Frobenius-norma**
+a **spektrálsugár**
 
-$$\Vert A\Vert_F:=\Big(\sum_{i,j}|a_{ij}|^2\Big)^{1/2}.$$
+$$
+\rho(A) := \max\{|\lambda| : \lambda \in \sigma(A)\},
+$$
 
-Továbbá $$Q$$ ortogonális/unitér: $$Q^TQ=I$$ (illetve $$Q^TQ=I$$).
+és a **Frobenius-norma**
+
+$$
+\lVert A \rVert_F := \Big(\sum_{i,j} |a_{ij}|^2\Big)^{1/2}.
+$$
+
+Tegyük fel továbbá, hogy $$Q$$ ortogonális (valós esetben), illetve unitér (komplex esetben), azaz $$Q^TQ = I$$, illetve $$Q^*Q = I$$.
 
 ---
 
-## (a) Ha $$A^TA=AA^T$$ (azaz $$A$$ normális), akkor $$\Vert A\Vert_2=\rho(A)$$.
+## (a) Ha $$A^TA = AA^T$$ (azaz $$A$$ normális), akkor $$\lVert A \rVert_2 = \rho(A)$$.
 
-**Bizonyítás.** Normális mátrixra a spektráltétel szerint létezik unitér $$U$$ és diagonális $$\Lambda=\mathrm{diag}(\lambda_1,\dots,\lambda_n)$$, hogy
+**Bizonyítás.** Normális mátrixra a spektráltétel szerint létezik unitér $$U$$ és diagonális $$\Lambda = \mathrm{diag}(\lambda_1,\dots,\lambda_n)$$ úgy, hogy
 
-$$A=U\Lambda U^T.$$
+$$
+A = U \Lambda U^*.
+$$
 
 Ekkor
 
-$$\Vert A\Vert_2=\Vert U\Lambda U^T\Vert_2.$$
+$$
+\lVert A \rVert_2 = \lVert U \Lambda U^* \rVert_2.
+$$
 
-A (b) pontból (unitér invariancia) majd következik, hogy $$\Vert U\Lambda U^T\Vert_2=\Vert\Lambda\Vert_2$$, tehát $$\Vert A\Vert_2=\Vert\Lambda\Vert_2$$.
+A (b) pontból (unitér invariancia) következik, hogy $$\lVert U \Lambda U^* \rVert_2 = \lVert \Lambda \rVert_2$$, tehát $$\lVert A \rVert_2 = \lVert \Lambda \rVert_2$$.
 
-Diagonális $$\Lambda$$-ra:
+Diagonális $$\Lambda$$ esetén:
 
-$$\Vert\Lambda\Vert_2=\max_{\Vert x\Vert_2=1}\Vert\Lambda x\Vert_2 =\max_{\Vert x\Vert_2=1}\Big(\sum_i |\lambda_i|^2|x_i|^2\Big)^{1/2} =\max_i |\lambda_i|.$$
+$$
+\lVert \Lambda \rVert_2
+= \max_{\lVert x \rVert_2 = 1} \lVert \Lambda x \rVert_2
+= \max_{\lVert x \rVert_2 = 1} \Big(\sum_i |\lambda_i|^2 |x_i|^2\Big)^{1/2}
+= \max_i |\lambda_i|.
+$$
 
-(A maximumot az $$x=e_k$$ egységvektor adja, ahol $$|\lambda_k|$$ a legnagyobb.)
+(A maximumot az $$x = e_k$$ egységvektor adja, ahol $$|\lambda_k|$$ a legnagyobb.)
+
 Így
 
-$$\Vert A\Vert_2=\max_i|\lambda_i|=\rho(A).$$
+$$
+\lVert A \rVert_2 = \max_i |\lambda_i| = \rho(A).
+$$
 
 Kész.
 
-*(Megj.: Szimmetrikus/Hermitikus mátrix normális, ezért rá is igaz.)*
+*(Megjegyzés: szimmetrikus/Hermitikus mátrix normális, ezért erre az esetre is igaz az állítás.)*
 
 ---
 
 ## (b) Ha $$Q$$ ortogonális/unitér, akkor
 
-1. $$\Vert Qx\Vert_2=\Vert x\Vert_2$$.
-2. $$\Vert Q\Vert_2=1$$.
-3. $$\Vert QA\Vert_2=\Vert AQ\Vert_2=\Vert A\Vert_2$$.
+1. $$\lVert Qx \rVert_2 = \lVert x \rVert_2$$.
+2. $$\lVert Q \rVert_2 = 1$$.
+3. $$\lVert QA \rVert_2 = \lVert AQ \rVert_2 = \lVert A \rVert_2$$.
 
-### (b1) $$\Vert Qx\Vert_2=\Vert x\Vert_2$$.
+### (b1) $$\lVert Qx \rVert_2 = \lVert x \rVert_2$$
 
-$$\Vert Qx\Vert_2^2=(Qx)^T (Qx)=x^T (Q^T Q)x=x^T Ix=\Vert x\Vert_2^2.$$
+$$
+\lVert Qx \rVert_2^2 = (Qx)^*(Qx) = x^*(Q^*Q)x = x^*Ix = \lVert x \rVert_2^2.
+$$
 
-### (b2) $$\Vert Q\Vert_2=1$$.
+### (b2) $$\lVert Q \rVert_2 = 1$$
 
-$$\Vert Q\Vert_2=\max_{\Vert x\Vert_2=1}\Vert Qx\Vert_2=\max_{\Vert x\Vert_2=1}\Vert x\Vert_2=1.$$
+$$
+\lVert Q \rVert_2 = \max_{\lVert x \rVert_2 = 1} \lVert Qx \rVert_2
+= \max_{\lVert x \rVert_2 = 1} \lVert x \rVert_2 = 1.
+$$
 
-### (b3) $$\Vert QA\Vert_2=\Vert A\Vert_2$$ és $$\Vert AQ\Vert_2=\Vert A\Vert_2$$.
+### (b3) $$\lVert QA \rVert_2 = \lVert A \rVert_2$$ és $$\lVert AQ \rVert_2 = \lVert A \rVert_2$$
 
 Balról:
 
-$$\Vert QA\Vert_2=\max_{\Vert x\Vert_2=1}\Vert QAx\Vert_2=\max_{\Vert x\Vert_2=1}\Vert Ax\Vert_2=\Vert A\Vert_2$$
+$$
+\lVert QA \rVert_2
+= \max_{\lVert x \rVert_2 = 1} \lVert QAx \rVert_2
+= \max_{\lVert x \rVert_2 = 1} \lVert Ax \rVert_2
+= \lVert A \rVert_2,
+$$
 
-mert $$Q$$ nem változtatja a vektornormát.
+mert $$Q$$ nem változtatja meg a 2-es vektornormát.
 
 Jobbról:
 
-$$\Vert AQ\Vert_2=\max_{\Vert x\Vert_2=1}\Vert AQx\Vert_2.$$
+$$
+\lVert AQ \rVert_2 = \max_{\lVert x \rVert_2 = 1} \lVert AQx \rVert_2.
+$$
 
-Tedd $$y=Qx$$. Ekkor $$\Vert y\Vert_2=\Vert x\Vert_2=1$$ és $$x=Q^T y$$, tehát a $$\{Qx:\Vert x\Vert=1\}$$ halmaz épp a gömb:
+Tegyük $$y = Qx$$. Ekkor $$\lVert y \rVert_2 = \lVert x \rVert_2 = 1$$ és $$x = Q^*y$$, tehát a $$\{Qx : \lVert x \rVert_2 = 1\}$$ halmaz éppen az egységgömb.
 
-$$\Vert AQ\Vert_2=\max_{\Vert y\Vert_2=1}\Vert Ay\Vert_2=\Vert A\Vert_2.$$
+$$
+\lVert AQ \rVert_2
+= \max_{\lVert y \rVert_2 = 1} \lVert Ay \rVert_2
+= \lVert A \rVert_2.
+$$
 
 ---
 
 # Mátrixnormák további tulajdonságai
 
-## (d) $$\Vert A\Vert_F^2=\mathrm{tr}(A^TA)$$.
+## (d) $$\lVert A \rVert_F^2 = \mathrm{tr}(A^*A)$$
 
-**Bizonyítás.** $$(A^TA)_{kk}=\sum_{i=1}^n a_{ik}^2$$ (komplex esetben $$\sum_i \overline{a_{ik}}a_{ik}=|a_{ik}|^2$$). Így
+**Bizonyítás.** Az $$A^*A$$ főátlójának $$k$$-adik eleme:
 
-$$\mathrm{tr}(A^TA)=\sum_{k=1}^n (A^TA)_{kk} =\sum_{k=1}^n\sum_{i=1}^n |a_{ik}|^2 =\sum_{i,k}|a_{ik}|^2=\Vert A\Vert_F^2.$$
-
----
-
-## (e) Ha $$Q$$ ortogonális/unitér, akkor $$\Vert QA\Vert_F=\Vert AQ\Vert_F=\Vert A\Vert_F$$.
-
-**Bizonyítás.** Használd (d)-t és a nyom ciklikusságát $$\mathrm{tr}(XYZ)=\mathrm{tr}(ZXY)$$.
-
-Balról:
-
-$$\Vert QA\Vert_F^2=\mathrm{tr}\big((QA)^T (QA)\big) =\mathrm{tr}(A^T Q^T QA) =\mathrm{tr}(A^T A)=\Vert A\Vert_F^2.$$
-
-Jobbról:
-
-$$\Vert AQ\Vert_F^2=\mathrm{tr}\big((AQ)^T (AQ)\big) =\mathrm{tr}(Q^T A^T AQ) =\mathrm{tr}(A^T AQ Q^T) =\mathrm{tr}(A^T A)=\Vert A\Vert_F^2.$$
-
----
-
-## (f) $$\Vert A\Vert_F^2=\sum_{i=1}^n \lambda_i(A^TA)$$.
-
-**Bizonyítás.** $$A^TA$$ szimmetrikus/Hermitikus és pozitív szemidefinit, ezért sajátértékei valósak és $$\ge 0$$. Ismert, hogy Hermitikus mátrixra
-
-$$\mathrm{tr}(B)=\sum_{i=1}^n \lambda_i(B).$$
-
-(d) szerint $$\Vert A\Vert_F^2=\mathrm{tr}(A^TA)$$, tehát
-
-$$\Vert A\Vert_F^2=\mathrm{tr}(A^TA)=\sum_{i=1}^n \lambda_i(A^TA).$$
-
-Kész.
-
-(Ekvivalensen: $$\lambda_i (A^T A)=\sigma_i (A)^2 $$, így $$\Vert A\Vert_F^2=\sum_i \sigma_i ( A^2 ) $$.)
-
----
-
-## (g) $$\Vert\cdot\Vert_F$$ és $$\Vert\cdot\Vert_2$$ ekvivalens mátrixnormák.
-
-Ekvivalencia itt azt jelenti: léteznek $$c,C>0$$, hogy minden $$A$$-ra
-
-$$c\Vert A\Vert_F\le \Vert A\Vert_2\le C\Vert A\Vert_F.$$
-
-**Állítás:**
-
-$$\boxed{\ \Vert A\Vert_2\le \Vert A\Vert_F\le \sqrt{n}\,\Vert A\Vert_2\ }.$$
-
-**Bizonyítás.** Jelölje $$\sigma_1\ge\dots\ge\sigma_n\ge 0$$ az $$A$$ szinguláris értékeit. Tudjuk:
-
-$$\Vert A\Vert_2=\sigma_1,\qquad \Vert A\Vert_F^2=\sum_{i=1}^n \sigma_i^2.$$
+$$
+(A^*A)_{kk} = \sum_{i=1}^n \overline{a_{ik}}\,a_{ik} = \sum_{i=1}^n |a_{ik}|^2.
+$$
 
 Ezért
 
-$$\Vert A\Vert_F^2=\sum_{i=1}^n\sigma_i^2 \ge \sigma_1^2=\Vert A\Vert_2^2 \quad\Rightarrow\quad \Vert A\Vert_F\ge \Vert A\Vert_2,$$
+$$
+\mathrm{tr}(A^*A)
+= \sum_{k=1}^n (A^*A)_{kk}
+= \sum_{k=1}^n \sum_{i=1}^n |a_{ik}|^2
+= \sum_{i,k} |a_{ik}|^2
+= \lVert A \rVert_F^2.
+$$
+
+---
+
+## (e) Ha $$Q$$ ortogonális/unitér, akkor $$\lVert QA \rVert_F = \lVert AQ \rVert_F = \lVert A \rVert_F$$
+
+**Bizonyítás.** Használjuk (d)-t és a nyom ciklikusságát: $$\mathrm{tr}(XYZ) = \mathrm{tr}(ZXY)$$.
+
+Balról:
+
+$$
+\lVert QA \rVert_F^2
+= \mathrm{tr}\big((QA)^*(QA)\big)
+= \mathrm{tr}(A^*Q^*QA)
+= \mathrm{tr}(A^*A)
+= \lVert A \rVert_F^2.
+$$
+
+Jobbról:
+
+$$
+\lVert AQ \rVert_F^2
+= \mathrm{tr}\big((AQ)^*(AQ)\big)
+= \mathrm{tr}(Q^*A^*AQ)
+= \mathrm{tr}(A^*AQQ^*)
+= \mathrm{tr}(A^*A)
+= \lVert A \rVert_F^2.
+$$
+
+---
+
+## (f) $$\lVert A \rVert_F^2 = \sum_{i=1}^n \lambda_i(A^*A)$$
+
+**Bizonyítás.** Az $$A^*A$$ mátrix Hermitikus és pozitív szemidefinit, ezért a sajátértékei valósak és nemnegatívak. Ismert, hogy Hermitikus mátrixra
+
+$$
+\mathrm{tr}(B) = \sum_{i=1}^n \lambda_i(B).
+$$
+
+A (d) pont szerint $$\lVert A \rVert_F^2 = \mathrm{tr}(A^*A)$$, tehát
+
+$$
+\lVert A \rVert_F^2 = \mathrm{tr}(A^*A) = \sum_{i=1}^n \lambda_i(A^*A).
+$$
+
+Kész.
+
+(Ekvivalensen: $$\lambda_i(A^*A) = \sigma_i(A)^2$$, ezért $$\lVert A \rVert_F^2 = \sum_i \sigma_i(A)^2$$.)
+
+---
+
+## (g) $$\lVert \cdot \rVert_F$$ és $$\lVert \cdot \rVert_2$$ ekvivalens mátrixnormák
+
+Az ekvivalencia itt azt jelenti, hogy léteznek $$c,C > 0$$ konstansok, amelyekre minden $$A$$-ra
+
+$$
+c\lVert A \rVert_F \le \lVert A \rVert_2 \le C\lVert A \rVert_F.
+$$
+
+**Állítás:**
+
+$$
+\boxed{\ \lVert A \rVert_2 \le \lVert A \rVert_F \le \sqrt{n}\,\lVert A \rVert_2\ }.
+$$
+
+**Bizonyítás.** Jelöljék $$\sigma_1 \ge \dots \ge \sigma_n \ge 0$$ az $$A$$ szinguláris értékeit. Tudjuk:
+
+$$
+\lVert A \rVert_2 = \sigma_1,\qquad
+\lVert A \rVert_F^2 = \sum_{i=1}^n \sigma_i^2.
+$$
+
+Ezért
+
+$$
+\lVert A \rVert_F^2 = \sum_{i=1}^n \sigma_i^2 \ge \sigma_1^2 = \lVert A \rVert_2^2
+\quad\Rightarrow\quad
+\lVert A \rVert_F \ge \lVert A \rVert_2,
+$$
 
 és
 
-$$\Vert A\Vert_F^2=\sum_{i=1}^n\sigma_i^2 \le \sum_{i=1}^n\sigma_1^2=n\sigma_1^2 \quad\Rightarrow\quad \Vert A\Vert_F\le \sqrt{n}\,\Vert A\Vert_2.$$
+$$
+\lVert A \rVert_F^2 = \sum_{i=1}^n \sigma_i^2 \le \sum_{i=1}^n \sigma_1^2 = n\sigma_1^2
+\quad\Rightarrow\quad
+\lVert A \rVert_F \le \sqrt{n}\,\lVert A \rVert_2.
+$$
 
 Kész.
 
 ---
 
-## (h) A Frobenius-norma illeszkedik a kettes vektornormához.
+## (h) A Frobenius-norma illeszkedik a kettes vektornormához
 
-Ez az „illeszkedik" tipikusan a **szubmultiplikativitást** jelenti a 2-es vektornormával:
+Ez itt a 2-es vektornormával való szubmultiplikativitást jelenti:
 
-$$\boxed{\ \Vert Ax\Vert_2\le \Vert A\Vert_F\,\Vert x\Vert_2\quad \forall x\ }.$$
+$$
+\boxed{\ \lVert Ax \rVert_2 \le \lVert A \rVert_F\,\lVert x \rVert_2 \quad \forall x\ }.
+$$
 
-**Bizonyítás.** Írd $$A$$ sorait $$r_1^T,\dots,r_n^T$$-vel. Ekkor
+**Bizonyítás.** Írjuk $$A$$ sorait $$r_1^T,\dots,r_n^T$$ alakban. Ekkor
 
-$$(Ax)_i=r_i^T x, \qquad \Vert Ax\Vert_2^2=\sum_{i=1}^n (r_i^T x)^2.$$
+$$
+(Ax)_i = r_i^T x, \qquad
+\lVert Ax \rVert_2^2 = \sum_{i=1}^n |r_i^T x|^2.
+$$
 
-Cauchy–Schwarz szerint $$|r_i^T x|\le \Vert r_i\Vert_2\Vert x\Vert_2$$, így
+Cauchy-Schwarz szerint $$|r_i^T x| \le \lVert r_i \rVert_2 \lVert x \rVert_2$$, így
 
-$$\Vert Ax\Vert_2^2=\sum_i |r_i^T x|^2 \le \sum_i \big(\Vert r_i\Vert_2^2\Vert x\Vert_2^2\big) =\Vert x\Vert_2^2\sum_i \Vert r_i\Vert_2^2.$$
+$$
+\lVert Ax \rVert_2^2
+= \sum_i |r_i^T x|^2
+\le \sum_i \big(\lVert r_i \rVert_2^2 \lVert x \rVert_2^2\big)
+= \lVert x \rVert_2^2 \sum_i \lVert r_i \rVert_2^2.
+$$
 
-De $$\sum_i \Vert r_i\Vert_2^2=\sum_{i,j} |a_{ij}|^2=\Vert A\Vert_F^2$$. Tehát
+De $$\sum_i \lVert r_i \rVert_2^2 = \sum_{i,j} |a_{ij}|^2 = \lVert A \rVert_F^2$$. Tehát
 
-$$\Vert Ax\Vert_2^2\le \Vert A\Vert_F^2\Vert x\Vert_2^2 \quad\Rightarrow\quad \Vert Ax\Vert_2\le \Vert A\Vert_F\Vert x\Vert_2.$$
+$$
+\lVert Ax \rVert_2^2 \le \lVert A \rVert_F^2 \lVert x \rVert_2^2
+\quad\Rightarrow\quad
+\lVert Ax \rVert_2 \le \lVert A \rVert_F \lVert x \rVert_2.
+$$
 
 Kész.
