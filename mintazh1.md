@@ -14,7 +14,10 @@ Tekintsük az $M(4, -2, 3)$ gépi számhalmazt (normalizált, 2-es számrendszer
 
 **(c)** Adja meg az $M(4, -2, 3)$ gépi számhalmaz pozitív elemeinek számát!
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 **(a)**
 
@@ -30,7 +33,7 @@ $5.5 = 101.1_2$ (mivel $5.5 = 4 + 1 + 0.5$), normalizálva: $0.1011_2 \cdot 2^3$
 
 Ellenőrzés: $0.1011_2 = 1/2 + 0/4 + 1/8 + 1/16 = 11/16$, tehát $11/16 \cdot 8 = 5.5$. ✓
 
-$\mathrm{fl}(5.5) = +\, 0.1011_2 \cdot 2^3$
+$\mathrm{fl}(5.5) = + 0.1011_2 \cdot 2^3$
 
 Mivel $k = 3 = k^+$ és a mantissza elfér 4 jegyen, ez pontos ábrázolás.
 
@@ -42,6 +45,8 @@ A mantissza $t = 4$ jegyű, az első jegy mindig $1$ (normalizált), a maradék 
 
 Pozitív gépi számok száma: $6 \cdot 8 = 48$.
 
+</details>
+
 ---
 
 ## 2. feladat — Gauss-elimináció (10 pont)
@@ -52,13 +57,12 @@ $$
 A = \begin{bmatrix} 2 & 1 & -1 \\ 4 & 0 & 2 \\ -2 & 3 & 1 \end{bmatrix}, \quad b = \begin{bmatrix} 1 \\ 6 \\ 5 \end{bmatrix}
 $$
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
 
-**Bővített mátrix:**
+<p></p>
 
-$$
-\begin{bmatrix} 2 & 1 & -1 & | & 1 \\ 4 & 0 & 2 & | & 6 \\ -2 & 3 & 1 & | & 5 \end{bmatrix}
-$$
+**Bővített mátrix:** $\begin{bmatrix} 2 & 1 & -1 & | & 1 \\ 4 & 0 & 2 & | & 6 \\ -2 & 3 & 1 & | & 5 \end{bmatrix}$
 
 **1. lépés:** $m_{21} = 4/2 = 2$, $m_{31} = -2/2 = -1$
 
@@ -66,17 +70,13 @@ $R_2 \leftarrow R_2 - 2 R_1$: $[0,\ -2,\ 4\ |\ 4]$
 
 $R_3 \leftarrow R_3 + R_1$: $[0,\ 4,\ 0\ |\ 6]$
 
-$$
-\begin{bmatrix} 2 & 1 & -1 & | & 1 \\ 0 & -2 & 4 & | & 4 \\ 0 & 4 & 0 & | & 6 \end{bmatrix}
-$$
+Eredmény: $\begin{bmatrix} 2 & 1 & -1 & | & 1 \\ 0 & -2 & 4 & | & 4 \\ 0 & 4 & 0 & | & 6 \end{bmatrix}$
 
 **2. lépés:** $m_{32} = 4/(-2) = -2$
 
 $R_3 \leftarrow R_3 + 2R_2$: $[0,\ 0,\ 8\ |\ 14]$
 
-$$
-\begin{bmatrix} 2 & 1 & -1 & | & 1 \\ 0 & -2 & 4 & | & 4 \\ 0 & 0 & 8 & | & 14 \end{bmatrix}
-$$
+Eredmény: $\begin{bmatrix} 2 & 1 & -1 & | & 1 \\ 0 & -2 & 4 & | & 4 \\ 0 & 0 & 8 & | & 14 \end{bmatrix}$
 
 **Visszahelyettesítés:**
 
@@ -88,6 +88,8 @@ $x_1 = (1 - 1 \cdot 3/2 + 1 \cdot 7/4) / 2 = (4/4 - 6/4 + 7/4)/2 = (5/4)/2 = 5/8
 
 $x = [5/8,\ 3/2,\ 7/4]^T$
 
+</details>
+
 ---
 
 ## 3. feladat — Részleges főelemkiválasztás (10 pont)
@@ -98,21 +100,18 @@ $$
 A = \begin{bmatrix} 1 & 2 & 1 \\ 4 & 2 & 1 \\ 2 & 1 & 4 \end{bmatrix}, \quad b = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}
 $$
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
 
-**Bővített mátrix:**
+<p></p>
 
-$$
-\begin{bmatrix} 1 & 2 & 1 & | & 1 \\ 4 & 2 & 1 & | & 2 \\ 2 & 1 & 4 & | & 3 \end{bmatrix}
-$$
+**Bővített mátrix:** $\begin{bmatrix} 1 & 2 & 1 & | & 1 \\ 4 & 2 & 1 & | & 2 \\ 2 & 1 & 4 & | & 3 \end{bmatrix}$
 
 **1. lépés — Főelemkiválasztás az 1. oszlopban:**
 
 $|a_{11}| = 1$, $|a_{21}| = 4$, $|a_{31}| = 2$ — maximum: $|a_{21}| = 4$ — $R_1 \leftrightarrow R_2$
 
-$$
-\begin{bmatrix} 4 & 2 & 1 & | & 2 \\ 1 & 2 & 1 & | & 1 \\ 2 & 1 & 4 & | & 3 \end{bmatrix}
-$$
+Csere után: $\begin{bmatrix} 4 & 2 & 1 & | & 2 \\ 1 & 2 & 1 & | & 1 \\ 2 & 1 & 4 & | & 3 \end{bmatrix}$
 
 $m_{21} = 1/4$, $m_{31} = 1/2$
 
@@ -120,9 +119,7 @@ $R_2 \leftarrow R_2 - \frac{1}{4}R_1$: $[0,\ 3/2,\ 3/4\ |\ 1/2]$
 
 $R_3 \leftarrow R_3 - \frac{1}{2}R_1$: $[0,\ 0,\ 7/2\ |\ 2]$
 
-$$
-\begin{bmatrix} 4 & 2 & 1 & | & 2 \\ 0 & 3/2 & 3/4 & | & 1/2 \\ 0 & 0 & 7/2 & | & 2 \end{bmatrix}
-$$
+Eredmény: $\begin{bmatrix} 4 & 2 & 1 & | & 2 \\ 0 & 3/2 & 3/4 & | & 1/2 \\ 0 & 0 & 7/2 & | & 2 \end{bmatrix}$
 
 **2. lépés — Főelemkiválasztás a 2. oszlopban (2. sortól):**
 
@@ -138,6 +135,8 @@ $x_1 = (2 - 2 \cdot 1/21 - 1 \cdot 4/7) / 4 = (42/21 - 2/21 - 12/21)/4 = (28/21)
 
 $x = [1/3,\ 1/21,\ 4/7]^T$
 
+</details>
+
 ---
 
 ## 4. feladat — LU-felbontás (10 pont)
@@ -148,7 +147,10 @@ $$
 A = \begin{bmatrix} 2 & 4 & -2 \\ 1 & 3 & 1 \\ -1 & 0 & 5 \end{bmatrix}
 $$
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 **GE 1. lépés:**
 
@@ -166,23 +168,15 @@ $R_3 \leftarrow R_3 - 2R_2$: $[0,\ 0,\ 0]$
 
 **Eredmény:**
 
-$$
-U = \begin{bmatrix} 2 & 4 & -2 \\ 0 & 1 & 2 \\ 0 & 0 & 0 \end{bmatrix}
-$$
+$U = \begin{bmatrix} 2 & 4 & -2 \\ 0 & 1 & 2 \\ 0 & 0 & 0 \end{bmatrix}$
 
-$L$: az $m_{ik}$ szorzók + egyes főátló:
+$L = \begin{bmatrix} 1 & 0 & 0 \\ 1/2 & 1 & 0 \\ -1/2 & 2 & 1 \end{bmatrix}$
 
-$$
-L = \begin{bmatrix} 1 & 0 & 0 \\ 1/2 & 1 & 0 \\ -1/2 & 2 & 1 \end{bmatrix}
-$$
-
-**Ellenőrzés:**
-
-$$
-LU = \begin{bmatrix} 1 & 0 & 0 \\ 1/2 & 1 & 0 \\ -1/2 & 2 & 1 \end{bmatrix} \begin{bmatrix} 2 & 4 & -2 \\ 0 & 1 & 2 \\ 0 & 0 & 0 \end{bmatrix} = \begin{bmatrix} 2 & 4 & -2 \\ 1 & 3 & 1 \\ -1 & 0 & 5 \end{bmatrix} = A \quad ✓
-$$
+**Ellenőrzés:** $LU = \begin{bmatrix} 2 & 4 & -2 \\ 1 & 3 & 1 \\ -1 & 0 & 5 \end{bmatrix} = A$ ✓
 
 (Megjegyzés: $u_{33} = 0$, tehát $A$ szinguláris, $\det A = 0$.)
+
+</details>
 
 ---
 
@@ -194,7 +188,10 @@ $$
 L = \begin{bmatrix} 1 & 0 & 0 \\ 2 & 1 & 0 \\ -1 & 3 & 1 \end{bmatrix}, \quad U = \begin{bmatrix} 3 & 1 & 2 \\ 0 & -2 & 1 \\ 0 & 0 & 4 \end{bmatrix}, \quad b = \begin{bmatrix} 5 \\ 6 \\ 9 \end{bmatrix}
 $$
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 **1. lépés: $Ly = b$ (előrehelyettesítés)**
 
@@ -218,6 +215,8 @@ $x = [-53/12,\ 21/4,\ 13/2]^T$
 
 **Ellenőrzés:** $Ax = LUx = L(Ux) = Ly = b$ ✓
 
+</details>
+
 ---
 
 ## 6. feladat — Vektor- és mátrixnormák (10 pont)
@@ -234,7 +233,10 @@ $$
 
 **(c)** Ellenőrizze a $\lVert x \rVert_\infty \le \lVert x \rVert_2 \le \lVert x \rVert_1$ egyenlőtlenséget!
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 **(a) Vektornormák:**
 
@@ -260,11 +262,13 @@ $\lVert A \rVert_\infty$ = max sorösszeg:
 
 $\lVert A \rVert_\infty = 6$
 
-$\lVert A \rVert_F = \sqrt{1^2 + (-2)^2 + 0^2 + 3^2 + 1^2 + (-1)^2 + 0^2 + 2^2 + 4^2} = \sqrt{1 + 4 + 0 + 9 + 1 + 1 + 0 + 4 + 16} = \sqrt{36} = 6$
+$\lVert A \rVert_F = \sqrt{1^2 + (-2)^2 + 0^2 + 3^2 + 1^2 + (-1)^2 + 0^2 + 2^2 + 4^2} = \sqrt{36} = 6$
 
 **(c) Egyenlőtlenség:**
 
 $4 \le 5 \le 7$ ✓
+
+</details>
 
 ---
 
@@ -282,7 +286,10 @@ $$
 
 **(c)** Igaz-e, hogy $\lVert A \rVert_2 = \rho(A)$? Miért?
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 **(a)** Karakterisztikus polinom:
 
@@ -300,7 +307,9 @@ $\lVert A \rVert_2 = \sqrt{\max \lambda_i(A^T A)} = \sqrt{9} = 3$
 
 **(c)**
 
-Igen, $\lVert A \rVert_2 = \rho(A) = 3$. Ez mindig teljesül **szimmetrikus** (általánosabban: normális) mátrixra, mert ilyenkor $A^T A$ sajátértékei éppen $\lambda_i^2$, és $\lVert A \rVert_2 = \sqrt{\max \lambda_i^2} = \max |\lambda_i| = \rho(A)$.
+Igen, $\lVert A \rVert_2 = \rho(A) = 3$. Ez mindig teljesül **szimmetrikus** (normális) mátrixra, mert ilyenkor $A^T A$ sajátértékei éppen $\lambda_i^2$, és $\lVert A \rVert_2 = \sqrt{\max \lambda_i^2} = \max |\lambda_i| = \rho(A)$.
+
+</details>
 
 ---
 
@@ -312,7 +321,10 @@ $$
 A = \begin{bmatrix} 4 & 2 & -2 \\ 2 & 5 & 1 \\ -2 & 1 & 6 \end{bmatrix}
 $$
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 **Direkt képletek:**
 
@@ -330,15 +342,11 @@ $d_{33} = a_{33} - l_{31}^2 \cdot d_{11} - l_{32}^2 \cdot d_{22} = 6 - (1/4) \cd
 
 **Eredmény:**
 
-$$
-L = \begin{bmatrix} 1 & 0 & 0 \\ 1/2 & 1 & 0 \\ -1/2 & 1/2 & 1 \end{bmatrix}, \quad D = \begin{bmatrix} 4 & 0 & 0 \\ 0 & 4 & 0 \\ 0 & 0 & 4 \end{bmatrix}
-$$
+$L = \begin{bmatrix} 1 & 0 & 0 \\ 1/2 & 1 & 0 \\ -1/2 & 1/2 & 1 \end{bmatrix}$, $D = \begin{bmatrix} 4 & 0 & 0 \\ 0 & 4 & 0 \\ 0 & 0 & 4 \end{bmatrix}$
 
-**Ellenőrzés:**
+**Ellenőrzés:** $LDL^T = A$ ✓
 
-$$
-LDL^T = \begin{bmatrix} 1 & 0 & 0 \\ 1/2 & 1 & 0 \\ -1/2 & 1/2 & 1 \end{bmatrix} \begin{bmatrix} 4 & 0 & 0 \\ 0 & 4 & 0 \\ 0 & 0 & 4 \end{bmatrix} \begin{bmatrix} 1 & 1/2 & -1/2 \\ 0 & 1 & 1/2 \\ 0 & 0 & 1 \end{bmatrix} = A \quad ✓
-$$
+</details>
 
 ---
 
@@ -350,7 +358,10 @@ $$
 A = \begin{bmatrix} 9 & -3 & 6 \\ -3 & 5 & -1 \\ 6 & -1 & 9 \end{bmatrix}
 $$
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 **Direkt képletek ($j = 1, 2, 3$):**
 
@@ -374,13 +385,13 @@ $l_{33} = \sqrt{a_{33} - l_{31}^2 - l_{32}^2} = \sqrt{9 - 4 - 1/4} = \sqrt{19/4}
 
 **Eredmény:**
 
-$$
-L = \begin{bmatrix} 3 & 0 & 0 \\ -1 & 2 & 0 \\ 2 & 1/2 & \sqrt{19}/2 \end{bmatrix}
-$$
+$L = \begin{bmatrix} 3 & 0 & 0 \\ -1 & 2 & 0 \\ 2 & 1/2 & \sqrt{19}/2 \end{bmatrix}$
 
 **Ellenőrzés:** $LL^T = A$ ✓
 
 (Megjegyzés: $d_{ii} > 0$ minden $i$-re az $LDL^T$-felbontásban, ami igazolja, hogy $A$ pozitív definit.)
+
+</details>
 
 ---
 
@@ -392,7 +403,10 @@ $$
 A = \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 1 & 1 & 0 \end{bmatrix}
 $$
 
-### Megoldás
+<details>
+<summary><strong>Megoldás</strong></summary>
+
+<p></p>
 
 $a_1 = [1, 0, 1]^T$, $a_2 = [0, 1, 1]^T$, $a_3 = [1, 1, 0]^T$
 
@@ -406,9 +420,7 @@ $q_1 = a_1/r_{11} = \frac{1}{\sqrt{2}}[1, 0, 1]^T$
 
 $r_{12} = \langle a_2, q_1 \rangle = 0 \cdot \frac{1}{\sqrt{2}} + 1 \cdot 0 + 1 \cdot \frac{1}{\sqrt{2}} = \frac{1}{\sqrt{2}}$
 
-$$
-s_2 = a_2 - r_{12} q_1 = \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix} - \frac{1}{2}\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix} = \begin{bmatrix} -1/2 \\ 1 \\ 1/2 \end{bmatrix}
-$$
+$s_2 = a_2 - r_{12} q_1 = [0, 1, 1]^T - \frac{1}{2}[1, 0, 1]^T = [-1/2, 1, 1/2]^T$
 
 $r_{22} = \lVert s_2 \rVert_2 = \sqrt{1/4 + 1 + 1/4} = \sqrt{3/2} = \frac{\sqrt{6}}{2}$
 
@@ -420,9 +432,7 @@ $r_{13} = \langle a_3, q_1 \rangle = 1 \cdot \frac{1}{\sqrt{2}} + 1 \cdot 0 + 0 
 
 $r_{23} = \langle a_3, q_2 \rangle = 1 \cdot \frac{-1}{\sqrt{6}} + 1 \cdot \frac{2}{\sqrt{6}} + 0 \cdot \frac{1}{\sqrt{6}} = \frac{1}{\sqrt{6}}$
 
-$$
-s_3 = a_3 - r_{13}q_1 - r_{23}q_2 = \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} - \frac{1}{2}\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix} - \frac{1}{6}\begin{bmatrix} -1 \\ 2 \\ 1 \end{bmatrix} = \begin{bmatrix} 2/3 \\ 2/3 \\ -2/3 \end{bmatrix}
-$$
+$s_3 = a_3 - r_{13}q_1 - r_{23}q_2 = [1, 1, 0]^T - \frac{1}{2}[1, 0, 1]^T - \frac{1}{6}[-1, 2, 1]^T = [2/3, 2/3, -2/3]^T$
 
 $r_{33} = \lVert s_3 \rVert_2 = \sqrt{4/9 + 4/9 + 4/9} = \sqrt{12/9} = \frac{2\sqrt{3}}{3}$
 
@@ -430,12 +440,10 @@ $q_3 = s_3/r_{33} = \frac{1}{\sqrt{3}}[1, 1, -1]^T$
 
 **Eredmény:**
 
-$$
-Q = \begin{bmatrix} 1/\sqrt{2} & -1/\sqrt{6} & 1/\sqrt{3} \\ 0 & 2/\sqrt{6} & 1/\sqrt{3} \\ 1/\sqrt{2} & 1/\sqrt{6} & -1/\sqrt{3} \end{bmatrix}
-$$
+$Q = \begin{bmatrix} 1/\sqrt{2} & -1/\sqrt{6} & 1/\sqrt{3} \\ 0 & 2/\sqrt{6} & 1/\sqrt{3} \\ 1/\sqrt{2} & 1/\sqrt{6} & -1/\sqrt{3} \end{bmatrix}$
 
-$$
-R = \begin{bmatrix} \sqrt{2} & 1/\sqrt{2} & 1/\sqrt{2} \\ 0 & \sqrt{6}/2 & 1/\sqrt{6} \\ 0 & 0 & 2\sqrt{3}/3 \end{bmatrix}
-$$
+$R = \begin{bmatrix} \sqrt{2} & 1/\sqrt{2} & 1/\sqrt{2} \\ 0 & \sqrt{6}/2 & 1/\sqrt{6} \\ 0 & 0 & 2\sqrt{3}/3 \end{bmatrix}$
 
 **Ellenőrzés:** $Q^T Q = I$ ✓, $QR = A$ ✓
+
+</details>
