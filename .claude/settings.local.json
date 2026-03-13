@@ -19,7 +19,8 @@
       "Read(//c/Users/Szekeres Béla/miniconda3/**)",
       "Bash(conda info --base)",
       "Bash(D:/anaconda3/python.exe -c \":*)",
-      "Bash(D:/anaconda3/python.exe -m jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=120 nummod_eagy05.ipynb --output nummod_eagy05_test.ipynb)"
+      "Bash(D:/anaconda3/python.exe -m jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=120 nummod_eagy05.ipynb --output nummod_eagy05_test.ipynb)",
+      "Bash(D:/anaconda3/python.exe _verify.py)"
     ]
   }
 }
