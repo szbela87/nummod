@@ -20,11 +20,9 @@ Tekintsük az $M(4, -2, 3)$ gépi számhalmazt (normalizált, 2-es számrendszer
 
 Oldja meg a következő lineáris egyenletrendszert Gauss-eliminációval (főelemkiválasztás nélkül)! Írja ki az egyes eliminációs lépéseket!
 
-```
-       | 2   1  -1 |         | 1 |
-  A =  | 4   0   2 |,   b =  | 6 |
-       |-2   3   1 |         | 5 |
-```
+$$
+A = \begin{bmatrix} 2 & 1 & -1 \\\\ 4 & 0 & 2 \\\\ -2 & 3 & 1 \end{bmatrix}, \quad b = \begin{bmatrix} 1 \\\\ 6 \\\\ 5 \end{bmatrix}
+$$
 
 ---
 
@@ -32,11 +30,9 @@ Oldja meg a következő lineáris egyenletrendszert Gauss-eliminációval (főel
 
 Oldja meg a következő lineáris egyenletrendszert Gauss-eliminációval **részleges főelemkiválasztással**! Jelölje a cserék helyét!
 
-```
-       | 1   2   1 |         | 1 |
-  A =  | 4   2   1 |,   b =  | 2 |
-       | 2   1   4 |         | 3 |
-```
+$$
+A = \begin{bmatrix} 1 & 2 & 1 \\\\ 4 & 2 & 1 \\\\ 2 & 1 & 4 \end{bmatrix}, \quad b = \begin{bmatrix} 1 \\\\ 2 \\\\ 3 \end{bmatrix}
+$$
 
 ---
 
@@ -44,11 +40,9 @@ Oldja meg a következő lineáris egyenletrendszert Gauss-eliminációval **rés
 
 Határozza meg a következő mátrix $A = LU$ felbontását Gauss-eliminációval! ($L$ egységalsó háromszög, $U$ felső háromszög)
 
-```
-       | 2   4  -2 |
-  A =  | 1   3   1 |
-       |-1   0   5 |
-```
+$$
+A = \begin{bmatrix} 2 & 4 & -2 \\\\ 1 & 3 & 1 \\\\ -1 & 0 & 5 \end{bmatrix}
+$$
 
 ---
 
@@ -56,11 +50,9 @@ Határozza meg a következő mátrix $A = LU$ felbontását Gauss-eliminációva
 
 Adott az alábbi $A = LU$ felbontás és a $b$ vektor. Oldja meg az $Ax = b$ rendszert előre- és visszahelyettesítéssel!
 
-```
-       | 1   0   0 |         | 3   1   2 |         | 5 |
-  L =  | 2   1   0 |,   U =  | 0  -2   1 |,   b =  | 6 |
-       |-1   3   1 |         | 0   0   4 |         | 9 |
-```
+$$
+L = \begin{bmatrix} 1 & 0 & 0 \\\\ 2 & 1 & 0 \\\\ -1 & 3 & 1 \end{bmatrix}, \quad U = \begin{bmatrix} 3 & 1 & 2 \\\\ 0 & -2 & 1 \\\\ 0 & 0 & 4 \end{bmatrix}, \quad b = \begin{bmatrix} 5 \\\\ 6 \\\\ 9 \end{bmatrix}
+$$
 
 ---
 
@@ -68,11 +60,9 @@ Adott az alábbi $A = LU$ felbontás és a $b$ vektor. Oldja meg az $Ax = b$ ren
 
 Legyen
 
-```
-       | 3 |              | 1  -2   0 |
-  x =  |-4 |,        A =  | 3   1  -1 |
-       | 0 |              | 0   2   4 |
-```
+$$
+x = \begin{bmatrix} 3 \\\\ -4 \\\\ 0 \end{bmatrix}, \qquad A = \begin{bmatrix} 1 & -2 & 0 \\\\ 3 & 1 & -1 \\\\ 0 & 2 & 4 \end{bmatrix}
+$$
 
 **(a)** Számítsa ki $\lVert x \rVert_1$, $\lVert x \rVert_2$, $\lVert x \rVert_\infty$ értékét!
 
@@ -86,10 +76,9 @@ Legyen
 
 Legyen
 
-```
-       | 2   1 |
-  A =  | 1   2 |
-```
+$$
+A = \begin{bmatrix} 2 & 1 \\\\ 1 & 2 \end{bmatrix}
+$$
 
 **(a)** Határozza meg $A$ sajátértékeit!
 
@@ -103,11 +92,9 @@ Legyen
 
 Határozza meg a következő szimmetrikus mátrix $A = LDL^T$ felbontását a direkt képletekkel!
 
-```
-       | 4   2  -2 |
-  A =  | 2   5   1 |
-       |-2   1   6 |
-```
+$$
+A = \begin{bmatrix} 4 & 2 & -2 \\\\ 2 & 5 & 1 \\\\ -2 & 1 & 6 \end{bmatrix}
+$$
 
 ---
 
@@ -115,11 +102,9 @@ Határozza meg a következő szimmetrikus mátrix $A = LDL^T$ felbontását a di
 
 Határozza meg a következő szimmetrikus, pozitív definit mátrix Cholesky-felbontását ($A = LL^T$) a direkt képletekkel!
 
-```
-       | 9  -3   6 |
-  A =  |-3   5  -1 |
-       | 6  -1   9 |
-```
+$$
+A = \begin{bmatrix} 9 & -3 & 6 \\\\ -3 & 5 & -1 \\\\ 6 & -1 & 9 \end{bmatrix}
+$$
 
 ---
 
@@ -127,8 +112,6 @@ Határozza meg a következő szimmetrikus, pozitív definit mátrix Cholesky-fel
 
 Határozza meg a következő mátrix QR-felbontását a Gram–Schmidt-féle ortogonalizációval (normálással)!
 
-```
-       | 1   0   1 |
-  A =  | 0   1   1 |
-       | 1   1   0 |
-```
+$$
+A = \begin{bmatrix} 1 & 0 & 1 \\\\ 0 & 1 & 1 \\\\ 1 & 1 & 0 \end{bmatrix}
+$$
