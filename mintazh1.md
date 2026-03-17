@@ -10,7 +10,7 @@ Tekintsük az $M(4, -2, 3)$ gépi számhalmazt (normalizált, 2-es számrendszer
 
 **(a)** Határozza meg a gépi epszilont ($\varepsilon_1$), a legkisebb pozitív gépi számot ($\varepsilon_0$) és a legnagyobb gépi számot ($M_\infty$)!
 
-**(b)** Adja meg az $x = 5.5$ szám gépi ábrázolását $$\mathrm{fl}(x)$$ ebben a rendszerben! Írja fel a normalizált alakot:
+**(b)** Adja meg az $x = 5.5$ szám gépi ábrázolását ($$\mathrm{fl}(x)$$) ebben a rendszerben! Írja fel a normalizált alakot:
 
 $$\mathrm{fl}(x) = \pm m \cdot 2^k$$
 
