@@ -1,0 +1,352 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Numerikus módszerek --- 1.\ minta zárthelyi\\[6pt]\large Megoldások}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+%=====================================================================
+\section*{1.\ feladat --- Lebegőpontos számábrázolás}
+%=====================================================================
+
+Adott: $M(4,-2,3)$, azaz $\beta=2$, $t=4$, $k^-= -2$, $k^+=3$.
+
+\paragraph{(a)}
+\begin{align}
+\varepsilon_1 &= \beta^{1-t} = 2^{1-4} = 2^{-3} = \frac{1}{8} = 0{,}125 \\[4pt]
+\varepsilon_0 &= \beta^{k^- - 1} = 2^{-2-1} = 2^{-3} = \frac{1}{8} = 0{,}125 \\[4pt]
+M_\infty &= \beta^{k^+}\bigl(1 - \beta^{-t}\bigr) = 2^3\!\left(1 - 2^{-4}\right) = 8 \cdot \frac{15}{16} = \frac{15}{2} = 7{,}5
+\end{align}
+
+\paragraph{(b)}
+$5{,}5 = 101{,}1_2 = 1{,}011_2 \cdot 2^2$. Mivel $t=4$ és a mantissza $1011_2$ pontosan 4 jegyű:
+\[
+  \mathrm{fl}(5{,}5) = +\,1{,}011_2 \cdot 2^2 = 5{,}5 \quad\text{(pontos ábrázolás)}.
+\]
+
+\paragraph{(c)}
+A pozitív gépi számok száma:
+\[
+  (\beta - 1)\,\beta^{t-1}\,(k^+ - k^- + 1) = 1 \cdot 2^3 \cdot (3-(-2)+1) = 8 \cdot 6 = 48.
+\]
+
+%=====================================================================
+\section*{2.\ feladat --- Gauss-elimináció}
+%=====================================================================
+
+\[
+\left[\begin{array}{ccc|c}
+2 & 1 & -1 & 1 \\
+4 & 0 & 2 & 6 \\
+-2 & 3 & 1 & 5
+\end{array}\right]
+\]
+
+\textbf{1.\ lépés:} $R_2 \leftarrow R_2 - 2R_1$, \; $R_3 \leftarrow R_3 + R_1$:
+\[
+\left[\begin{array}{ccc|c}
+2 & 1 & -1 & 1 \\
+0 & -2 & 4 & 4 \\
+0 & 4 & 0 & 6
+\end{array}\right]
+\]
+
+\textbf{2.\ lépés:} $R_3 \leftarrow R_3 + 2R_2$:
+\[
+\left[\begin{array}{ccc|c}
+2 & 1 & -1 & 1 \\
+0 & -2 & 4 & 4 \\
+0 & 0 & 8 & 14
+\end{array}\right]
+\]
+
+\textbf{Visszahelyettesítés:}
+\begin{align}
+x_3 &= \frac{14}{8} = \frac{7}{4}, \\[4pt]
+x_2 &= \frac{4 - 4\cdot\frac{7}{4}}{-2} = \frac{4-7}{-2} = \frac{3}{2}, \\[4pt]
+x_1 &= \frac{1 - \frac{3}{2} + \frac{7}{4}}{2} = \frac{\frac{4-6+7}{4}}{2} = \frac{5}{8}.
+\end{align}
+
+\[
+\boxed{x = \begin{pmatrix} 5/8 \\ 3/2 \\ 7/4 \end{pmatrix}}
+\]
+
+%=====================================================================
+\section*{3.\ feladat --- Részleges főelemkiválasztás}
+%=====================================================================
+
+\[
+\left[\begin{array}{ccc|c}
+1 & 2 & 1 & 1 \\
+4 & 2 & 1 & 2 \\
+2 & 1 & 4 & 3
+\end{array}\right]
+\]
+
+\textbf{1.\ lépés:} Az első oszlopban $|4|$ a legnagyobb $\Rightarrow$ $R_1 \leftrightarrow R_2$:
+\[
+\left[\begin{array}{ccc|c}
+4 & 2 & 1 & 2 \\
+1 & 2 & 1 & 1 \\
+2 & 1 & 4 & 3
+\end{array}\right]
+\]
+
+$R_2 \leftarrow R_2 - \tfrac{1}{4}R_1$, \; $R_3 \leftarrow R_3 - \tfrac{1}{2}R_1$:
+\[
+\left[\begin{array}{ccc|c}
+4 & 2 & 1 & 2 \\[2pt]
+0 & \frac{3}{2} & \frac{3}{4} & \frac{1}{2} \\[2pt]
+0 & 0 & \frac{7}{2} & 2
+\end{array}\right]
+\]
+
+\textbf{2.\ lépés:} A második oszlopban $|\frac{3}{2}| \ge |0|$, nincs csere.
+
+$R_3 \leftarrow R_3 - \frac{0}{3/2}\,R_2 = R_3$ (nincs változás).
+
+\textbf{Visszahelyettesítés:}
+\begin{align}
+x_3 &= \frac{2}{7/2} = \frac{4}{7}, \\[4pt]
+x_2 &= \frac{\frac{1}{2} - \frac{3}{4}\cdot\frac{4}{7}}{3/2} = \frac{\frac{1}{2} - \frac{3}{7}}{3/2} = \frac{\frac{1}{14}}{3/2} = \frac{1}{21}, \\[4pt]
+x_1 &= \frac{2 - 2\cdot\frac{1}{21} - 1\cdot\frac{4}{7}}{4} = \frac{2 - \frac{2}{21} - \frac{4}{7}}{4} = \frac{\frac{42-2-12}{21}}{4} = \frac{28}{84} = \frac{1}{3}.
+\end{align}
+
+\[
+\boxed{x = \begin{pmatrix} 1/3 \\ 1/21 \\ 4/7 \end{pmatrix}}
+\]
+
+%=====================================================================
+\section*{4.\ feladat --- LU-felbontás}
+%=====================================================================
+
+\[
+A = \begin{pmatrix} 2 & 4 & -2 \\ 1 & 3 & 1 \\ -1 & 0 & 5 \end{pmatrix}
+\]
+
+\textbf{1.\ lépés:} $l_{21} = \frac{1}{2}$, \; $R_2 \leftarrow R_2 - \frac{1}{2}R_1$:
+\[
+U \to \begin{pmatrix} 2 & 4 & -2 \\ 0 & 1 & 2 \\ -1 & 0 & 5 \end{pmatrix}
+\]
+
+\textbf{2.\ lépés:} $l_{31} = -\frac{1}{2}$, \; $R_3 \leftarrow R_3 + \frac{1}{2}R_1$:
+\[
+U \to \begin{pmatrix} 2 & 4 & -2 \\ 0 & 1 & 2 \\ 0 & 2 & 4 \end{pmatrix}
+\]
+
+\textbf{3.\ lépés:} $l_{32} = \frac{2}{1} = 2$, \; $R_3 \leftarrow R_3 - 2R_2$:
+\[
+U = \begin{pmatrix} 2 & 4 & -2 \\ 0 & 1 & 2 \\ 0 & 0 & 0 \end{pmatrix}
+\]
+
+Tehát:
+\[
+L = \begin{pmatrix} 1 & 0 & 0 \\ \frac{1}{2} & 1 & 0 \\ -\frac{1}{2} & 2 & 1 \end{pmatrix}, \quad
+U = \begin{pmatrix} 2 & 4 & -2 \\ 0 & 1 & 2 \\ 0 & 0 & 0 \end{pmatrix}.
+\]
+
+\textbf{Megjegyzés:} $\det(A) = \det(U) = 2\cdot 1\cdot 0 = 0$, a mátrix szinguláris.
+
+%=====================================================================
+\section*{5.\ feladat --- LER megoldása LU-felbontással}
+%=====================================================================
+
+Adott:
+\[
+L = \begin{pmatrix} 1 & 0 & 0 \\ 2 & 1 & 0 \\ -1 & 3 & 1 \end{pmatrix}, \quad
+U = \begin{pmatrix} 3 & 1 & 2 \\ 0 & -2 & 1 \\ 0 & 0 & 4 \end{pmatrix}, \quad
+b = \begin{pmatrix} 5 \\ 6 \\ 9 \end{pmatrix}.
+\]
+
+\textbf{Előrehelyettesítés} ($Ly = b$):
+\begin{align}
+y_1 &= 5, \\
+y_2 &= 6 - 2\cdot 5 = -4, \\
+y_3 &= 9 - (-1)\cdot 5 - 3\cdot(-4) = 9 + 5 + 12 = 26.
+\end{align}
+
+\textbf{Visszahelyettesítés} ($Ux = y$):
+\begin{align}
+x_3 &= \frac{26}{4} = \frac{13}{2}, \\[4pt]
+x_2 &= \frac{-4 - 1\cdot\frac{13}{2}}{-2} = \frac{-4 - \frac{13}{2}}{-2} = \frac{-\frac{21}{2}}{-2} = \frac{21}{4}, \\[4pt]
+x_1 &= \frac{5 - 1\cdot\frac{21}{4} - 2\cdot\frac{13}{2}}{3} = \frac{5 - \frac{21}{4} - 13}{3} = \frac{\frac{20-21-52}{4}}{3} = \frac{-53}{12}.
+\end{align}
+
+\[
+\boxed{x = \begin{pmatrix} -53/12 \\ 21/4 \\ 13/2 \end{pmatrix}}
+\]
+
+%=====================================================================
+\section*{6.\ feladat --- Vektor- és mátrixnormák}
+%=====================================================================
+
+\[
+x = \begin{pmatrix} 3 \\ -4 \\ 0 \end{pmatrix}, \qquad
+A = \begin{pmatrix} 1 & -2 & 0 \\ 3 & 1 & -1 \\ 0 & 2 & 4 \end{pmatrix}
+\]
+
+\paragraph{(a) Vektornormák:}
+\begin{align}
+\lVert x \rVert_1 &= |3| + |-4| + |0| = 7, \\
+\lVert x \rVert_2 &= \sqrt{9 + 16 + 0} = \sqrt{25} = 5, \\
+\lVert x \rVert_\infty &= \max\{|3|,|-4|,|0|\} = 4.
+\end{align}
+
+\paragraph{(b) Mátrixnormák:}
+\begin{align}
+\lVert A \rVert_1 &= \max_j \sum_{i}|a_{ij}| = \max\{|1|{+}|3|{+}|0|,\;|-2|{+}|1|{+}|2|,\;|0|{+}|-1|{+}|4|\} = \max\{4,5,5\} = 5, \\
+\lVert A \rVert_\infty &= \max_i \sum_{j}|a_{ij}| = \max\{1{+}2{+}0,\;3{+}1{+}1,\;0{+}2{+}4\} = \max\{3,5,6\} = 6, \\
+\lVert A \rVert_F &= \sqrt{1+4+0+9+1+1+0+4+16} = \sqrt{36} = 6.
+\end{align}
+
+\paragraph{(c) Egyenlőtlenség-ellenőrzés:}
+\[
+\lVert x \rVert_\infty = 4 \le \lVert x \rVert_2 = 5 \le \lVert x \rVert_1 = 7. \qquad\checkmark
+\]
+
+%=====================================================================
+\section*{7.\ feladat --- Spektrálsugár és $\lVert A \rVert_2$}
+%=====================================================================
+
+\[
+A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}
+\]
+
+\paragraph{(a) Sajátértékek:}
+\[
+\det(A - \lambda I) = (2-\lambda)^2 - 1 = \lambda^2 - 4\lambda + 3 = (\lambda-1)(\lambda-3) = 0.
+\]
+Tehát $\lambda_1 = 1$, $\lambda_2 = 3$.
+
+\paragraph{(b)}
+\[
+\rho(A) = \max\{|\lambda_1|, |\lambda_2|\} = 3, \qquad
+\lVert A \rVert_2 = \sqrt{\rho(A^T A)}.
+\]
+Mivel $A$ szimmetrikus: $A^T A = A^2$, így $A^T A$ sajátértékei $1^2=1$ és $3^2=9$:
+\[
+\lVert A \rVert_2 = \sqrt{9} = 3.
+\]
+
+\paragraph{(c)}
+Szimmetrikus mátrixra $\lVert A \rVert_2 = \rho(A)$ mindig teljesül. Valóban: $3 = 3$. \checkmark
+
+%=====================================================================
+\section*{8.\ feladat --- $LDL^T$-felbontás}
+%=====================================================================
+
+\[
+A = \begin{pmatrix} 4 & 2 & -2 \\ 2 & 5 & 1 \\ -2 & 1 & 6 \end{pmatrix}
+\]
+
+A direkt képletek:
+\begin{align}
+d_1 &= a_{11} = 4, \\[4pt]
+l_{21} &= \frac{a_{21}}{d_1} = \frac{2}{4} = \frac{1}{2}, \\[4pt]
+l_{31} &= \frac{a_{31}}{d_1} = \frac{-2}{4} = -\frac{1}{2}, \\[4pt]
+d_2 &= a_{22} - l_{21}^2\,d_1 = 5 - \frac{1}{4}\cdot 4 = 4, \\[4pt]
+l_{32} &= \frac{a_{32} - l_{31}\,l_{21}\,d_1}{d_2} = \frac{1 - \bigl(-\frac{1}{2}\bigr)\!\cdot\!\frac{1}{2}\!\cdot\!4}{4} = \frac{1+1}{4} = \frac{1}{2}, \\[4pt]
+d_3 &= a_{33} - l_{31}^2\,d_1 - l_{32}^2\,d_2 = 6 - \frac{1}{4}\cdot 4 - \frac{1}{4}\cdot 4 = 4.
+\end{align}
+
+\[
+\boxed{
+L = \begin{pmatrix} 1 & 0 & 0 \\ \frac{1}{2} & 1 & 0 \\ -\frac{1}{2} & \frac{1}{2} & 1 \end{pmatrix}, \quad
+D = \begin{pmatrix} 4 & 0 & 0 \\ 0 & 4 & 0 \\ 0 & 0 & 4 \end{pmatrix}
+}
+\]
+
+%=====================================================================
+\section*{9.\ feladat --- Cholesky-felbontás}
+%=====================================================================
+
+\[
+A = \begin{pmatrix} 9 & -3 & 6 \\ -3 & 5 & -1 \\ 6 & -1 & 9 \end{pmatrix}
+\]
+
+A direkt képletek ($A = LL^T$):
+\begin{align}
+l_{11} &= \sqrt{a_{11}} = \sqrt{9} = 3, \\[4pt]
+l_{21} &= \frac{a_{21}}{l_{11}} = \frac{-3}{3} = -1, \\[4pt]
+l_{31} &= \frac{a_{31}}{l_{11}} = \frac{6}{3} = 2, \\[4pt]
+l_{22} &= \sqrt{a_{22} - l_{21}^2} = \sqrt{5 - 1} = \sqrt{4} = 2, \\[4pt]
+l_{32} &= \frac{a_{32} - l_{31}\,l_{21}}{l_{22}} = \frac{-1 - 2\cdot(-1)}{2} = \frac{1}{2}, \\[4pt]
+l_{33} &= \sqrt{a_{33} - l_{31}^2 - l_{32}^2} = \sqrt{9 - 4 - \frac{1}{4}} = \sqrt{\frac{19}{4}} = \frac{\sqrt{19}}{2}.
+\end{align}
+
+\[
+\boxed{
+L = \begin{pmatrix} 3 & 0 & 0 \\ -1 & 2 & 0 \\ 2 & \frac{1}{2} & \frac{\sqrt{19}}{2} \end{pmatrix}
+}
+\]
+
+%=====================================================================
+\section*{10.\ feladat --- QR-felbontás Gram--Schmidt-tel}
+%=====================================================================
+
+\[
+A = \begin{pmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 1 & 1 & 0 \end{pmatrix}
+\]
+
+Jelöljük az oszlopvektorokat $a_1, a_2, a_3$-mal.
+
+\paragraph{1.\ lépés: $q_1$}
+\[
+\lVert a_1 \rVert = \sqrt{1+0+1} = \sqrt{2}, \qquad
+q_1 = \frac{a_1}{\lVert a_1 \rVert} = \begin{pmatrix} 1/\sqrt{2} \\ 0 \\ 1/\sqrt{2} \end{pmatrix}.
+\]
+
+\paragraph{2.\ lépés: $q_2$}
+\[
+\langle a_2, q_1 \rangle = 0\cdot\frac{1}{\sqrt{2}} + 1\cdot 0 + 1\cdot\frac{1}{\sqrt{2}} = \frac{1}{\sqrt{2}}.
+\]
+\[
+v_2 = a_2 - \langle a_2, q_1 \rangle\, q_1
+= \begin{pmatrix} 0\\1\\1 \end{pmatrix} - \frac{1}{\sqrt{2}}\begin{pmatrix} 1/\sqrt{2}\\0\\1/\sqrt{2} \end{pmatrix}
+= \begin{pmatrix} -1/2\\1\\1/2 \end{pmatrix}.
+\]
+\[
+\lVert v_2 \rVert = \sqrt{\frac{1}{4}+1+\frac{1}{4}} = \sqrt{\frac{3}{2}} = \frac{\sqrt{6}}{2}, \qquad
+q_2 = \frac{v_2}{\lVert v_2 \rVert} = \begin{pmatrix} -1/\sqrt{6} \\ 2/\sqrt{6} \\ 1/\sqrt{6} \end{pmatrix}.
+\]
+
+\paragraph{3.\ lépés: $q_3$}
+\[
+\langle a_3, q_1 \rangle = \frac{1}{\sqrt{2}} + 0 + 0 = \frac{1}{\sqrt{2}}, \qquad
+\langle a_3, q_2 \rangle = \frac{-1}{\sqrt{6}} + \frac{2}{\sqrt{6}} + 0 = \frac{1}{\sqrt{6}}.
+\]
+\[
+v_3 = a_3 - \langle a_3, q_1\rangle\,q_1 - \langle a_3, q_2\rangle\,q_2
+= \begin{pmatrix}1\\1\\0\end{pmatrix} - \frac{1}{\sqrt{2}}\begin{pmatrix}1/\sqrt{2}\\0\\1/\sqrt{2}\end{pmatrix} - \frac{1}{\sqrt{6}}\begin{pmatrix}-1/\sqrt{6}\\2/\sqrt{6}\\1/\sqrt{6}\end{pmatrix}
+= \begin{pmatrix}2/3\\2/3\\-2/3\end{pmatrix}.
+\]
+\[
+\lVert v_3 \rVert = \sqrt{\frac{4}{9}+\frac{4}{9}+\frac{4}{9}} = \frac{2\sqrt{3}}{3}, \qquad
+q_3 = \frac{v_3}{\lVert v_3 \rVert} = \begin{pmatrix} 1/\sqrt{3} \\ 1/\sqrt{3} \\ -1/\sqrt{3} \end{pmatrix}.
+\]
+
+\paragraph{Eredmény:}
+\[
+\boxed{
+Q = \begin{pmatrix}
+\frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{6}} & \frac{1}{\sqrt{3}} \\[4pt]
+0 & \frac{2}{\sqrt{6}} & \frac{1}{\sqrt{3}} \\[4pt]
+\frac{1}{\sqrt{2}} & \frac{1}{\sqrt{6}} & -\frac{1}{\sqrt{3}}
+\end{pmatrix}, \quad
+R = \begin{pmatrix}
+\sqrt{2} & \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\[4pt]
+0 & \frac{\sqrt{6}}{2} & \frac{1}{\sqrt{6}} \\[4pt]
+0 & 0 & \frac{2\sqrt{3}}{3}
+\end{pmatrix}
+}
+\]
+
+\end{document}
