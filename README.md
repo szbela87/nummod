@@ -13,7 +13,7 @@ Előadás- és gyakorlati anyagok Jupyter notebookokban, az ELTE IK, PTI - Numer
 | 5 | [ea_05](nummod_2020_ea_05.pdf) | Progonka módszer, LDU-felbontás, $LDL^\top$, Cholesky-felbontás | [nummod_eagy03.ipynb](nummod_eagy03.ipynb) | |
 | 6 | [ea_06](nummod_2020_ea_06.pdf) | Ortogonális mátrixok, QR-felbontás, Gram–Schmidt, Householder | [nummod_eagy05.ipynb](nummod_eagy05.ipynb) | |
 | 7 | [ea_07](nummod_2020_ea_07.pdf) | Rövidített GE (progonka módszer), iterációs módszerek, Banach-fixponttétel, Jacobi-iteráció, csillapított Jacobi | [nummod_ea08.ipynb](nummod_ea08.ipynb), [nummod_gy08.ipynb](nummod_gy08.ipynb) | |
-| 8 | [ea_08](nummod_2020_ea_08.pdf) | Gauss–Seidel iteráció, relaxált Gauss–Seidel $S(\omega)$, Richardson-iteráció | [nummod_ea08.ipynb](nummod_ea08.ipynb), [nummod_gy08.ipynb](nummod_gy08.ipynb) | |
+| 8 | [ea_08](nummod_2020_ea_08.pdf) | Gauss–Seidel iteráció, relaxált Gauss–Seidel $S(\omega)$, Richardson-iteráció | [nummod_ea08.ipynb](nummod_ea08.ipynb), [nummod_gy08.ipynb](nummod_gy08.ipynb), [nummod_gy08_2.ipynb](nummod_gy08_2.ipynb) | |
 | 9 | [ea_09](nummod_2020_ea_09.pdf) | | | |
 | 10 | [ea_10](nummod_2020_ea_10.pdf) | | | |
 | 11 | [ea_11](nummod_2020_ea_11.pdf) | | | |
@@ -32,6 +32,7 @@ Előadás- és gyakorlati anyagok Jupyter notebookokban, az ELTE IK, PTI - Numer
 | [nummod_eagy05.ipynb](nummod_eagy05.ipynb) | 5. előadás + gyakorlat — Ortogonális mátrixok, QR-felbontás, Gram–Schmidt, Householder (elmélet + példák + önálló + debug feladatok) |
 | [nummod_ea08.ipynb](nummod_ea08.ipynb) | 7–8. előadás — Progonka módszer, Banach-fixponttétel, Jacobi, csillapított Jacobi, Gauss–Seidel, relaxált Gauss–Seidel $S(\omega)$, Richardson-iteráció |
 | [nummod_gy08.ipynb](nummod_gy08.ipynb) | 8. gyakorlat — Progonka, Jacobi, Gauss–Seidel, relaxált GS, Richardson (implementációs + elméleti feladatok, összehasonlítás) |
+| [nummod_gy08_2.ipynb](nummod_gy08_2.ipynb) | 8. gyakorlat (papír-ceruza) — Progonka, L+D+U felbontás, Jacobi, Gauss–Seidel, kontrakció/hibabecslés, relaxált GS optimális $\omega$, Richardson (kézi számolós feladatok Python ellenőrzéssel) |
 
 ## Egyéb anyagok
 
