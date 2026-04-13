@@ -21,11 +21,37 @@
 \date{2025/26.\ tanév}
 
 \begin{document}
-\maketitle
-\tableofcontents
-\bigskip\hrule\bigskip
+%\maketitle
+%\tableofcontents
+%\bigskip\hrule\bigskip
 
 \section{Gauss--Seidel és SOR iteráció}
+
+\begin{mdframed}[backgroundcolor=taskbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Optimális SOR-tétel (Young-tétel).} \quad
+{\normalfont\small SOR = \textit{Successive Over-Relaxation} (egymást követő túlrelaxáció)}
+
+\medskip
+\textit{Feltételek:}
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item $A$ szimmetrikus, pozitív definit;
+  \item $A$ tridiagonális szerkezetű;
+  \item a Jacobi-iteráció $B_J$ mátrixának sajátértékei valósak.
+\end{enumerate}
+
+\medskip
+\textit{Állítás:}\ Ha $\varrho(B_J)<1$, akkor
+\[
+  \omega_0 = \frac{2}{1+\sqrt{1-\varrho(B_J)^2}}
+\]
+az optimális relaxációs paraméter, és a hozzá tartozó SOR-iteráció spektrálsugara
+\[
+  \varrho(B_{\omega_0}) = \omega_0 - 1.
+\]
+Bármely $\omega\in(0,2)$-re $\varrho(B_\omega)<1$ (konvergencia), és
+$\varrho(B_{\omega_0})\le\varrho(B_\omega)$ (optimalitás).
+\end{mdframed}
+
 \subsection*{1. feladat -- Gauss--Seidel lépések kézzel}
 
 Legyen
@@ -34,8 +60,8 @@ $$A = \begin{bmatrix}4&-1\\-1&4\end{bmatrix}, \quad b = \begin{bmatrix}3\\7\end{
 
 \textbf{Végezz 2 Gauss--Seidel-iterációs lépést kézzel!}
 
-\textit{Emlékeztető:} Az $i$-edik egyenletből:
-$$x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j<i}a_{ij}x_j^{(k+1)} - \sum_{j>i}a_{ij}x_j^{(k)}\right)$$
+%\textit{Emlékeztető:} Az $i$-edik egyenletből:
+%$$x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j<i}a_{ij}x_j^{(k+1)} - \sum_{j>i}a_{ij}x_j^{(k)}\right)$$
 
 
 \subsection*{2. feladat -- Optimális SOR paraméter meghatározása}
@@ -108,7 +134,7 @@ k & a & b & c=(a+b)/2 & f(c) & új intervallum\\
 \end{tabular}
 \end{center}
 
-\textit{Ellenőrzés:} $f(2)=-1<0$, $f(3)=16>0$ \checkmark
+%\textit{Ellenőrzés:} $f(2)=-1<0$, $f(3)=16>0$ \checkmark
 
 \subsection*{8. feladat -- Szükséges lépésszám}
 
