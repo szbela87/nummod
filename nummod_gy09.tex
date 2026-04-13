@@ -3,7 +3,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[magyar]{babel}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage[margin=2.5cm]{geometry}
+\usepackage[margin=1.2cm,columnsep=6mm]{geometry}
+\usepackage{graphicx}
 \usepackage{parskip}
 \usepackage{enumitem}
 \usepackage{xcolor}
@@ -55,8 +56,12 @@ $\varrho(B_{\omega_0})\le\varrho(B_\omega)$ (optimalitás).
 \subsection*{1. feladat -- Gauss--Seidel lépések kézzel}
 
 Legyen
-$$A = \begin{bmatrix}4&-1\\-1&4\end{bmatrix}, \quad b = \begin{bmatrix}3\\7\end{bmatrix},
-\quad x^{(0)} = \begin{bmatrix}0\\0\end{bmatrix}.$$
+\[
+\begin{gathered}
+A = \begin{bmatrix}4&-1\\-1&4\end{bmatrix},\quad b = \begin{bmatrix}3\\7\end{bmatrix},\\
+x^{(0)} = \begin{bmatrix}0\\0\end{bmatrix}.
+\end{gathered}
+\]
 
 \textbf{Végezz 2 Gauss--Seidel-iterációs lépést kézzel!}
 
@@ -85,13 +90,17 @@ Ha igen, add meg $\omega_0$-t.
 
 (b) $A_2 = \begin{bmatrix}2&1\\-1&3\end{bmatrix}$
 
-(c) $A_3 = \begin{bmatrix}4&-1&-1&0\\-1&4&0&-1\\-1&0&4&-1\\0&-1&-1&4\end{bmatrix}$
+(c) $A_3 = \scalebox{0.78}{$\begin{bmatrix}4&-1&-1&0\\-1&4&0&-1\\-1&0&4&-1\\0&-1&-1&4\end{bmatrix}$}$
 
 
 \section{Richardson-iteráció}
 \subsection*{4. feladat -- Richardson konvergencia tartomány}
 
-$$A = \begin{bmatrix}5&1\\1&5\end{bmatrix}, \quad b = \begin{bmatrix}6\\6\end{bmatrix}$$
+\[
+\begin{gathered}
+A = \begin{bmatrix}5&1\\1&5\end{bmatrix},\quad b = \begin{bmatrix}6\\6\end{bmatrix}
+\end{gathered}
+\]
 
 Add meg azt a $p\in\mathbb{R}$ értéktartományt, amelyre a Richardson-iteráció $R(p)$ konvergens!
 
@@ -109,8 +118,12 @@ Az előző feladat mátrixára ($A=\begin{bmatrix}5&1\\1&5\end{bmatrix}$):
 
 \subsection*{6. feladat -- Richardson-lépések kézzel}
 
-$$A = \begin{bmatrix}5&1\\1&5\end{bmatrix},\quad b = \begin{bmatrix}6\\6\end{bmatrix},
-\quad x^{(0)} = \begin{bmatrix}0\\0\end{bmatrix},\quad p = \frac{1}{5}$$
+\[
+\begin{gathered}
+A = \begin{bmatrix}5&1\\1&5\end{bmatrix},\quad b = \begin{bmatrix}6\\6\end{bmatrix},\\
+x^{(0)} = \begin{bmatrix}0\\0\end{bmatrix},\quad p = \tfrac{1}{5}
+\end{gathered}
+\]
 
 Végezz 2 Richardson-lépést kézzel (reziduum-vektoros alakban)!
 
@@ -123,13 +136,13 @@ $$f(x) = x^3 - 2x - 5$$, intervallum: $$[2, 3]$$.
 Végezz \textbf{3 intervallumfelezési lépést} kézzel! Töltsd ki a táblázatot:
 
 \begin{center}
-\begin{tabular}{l|l|l|l|l|l}
+\begin{tabular}{c|c|c|c|c|c}
 \hline
-k & a & b & c=(a+b)/2 & f(c) & új intervallum\\
+$k$ & $a$ & $b$ & $c=\frac{a+b}{2}$ & $f(c)$ & új int.\\
 \hline
-0 & 2 & 3 & 2.5 & -0.375 & [2.5, 3]\\
-1 & 2.5 & 3 & ... & ... & ...\\
-2 & ... & ... & ... & ... & ...\\
+0 & 2 & 3 & 2.5 & $-$0.375 & [2.5, 3]\\
+1 & 2.5 & 3 & \ldots & \ldots & \ldots\\
+2 & \ldots & \ldots & \ldots & \ldots & \ldots\\
 \hline
 \end{tabular}
 \end{center}
