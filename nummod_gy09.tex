@@ -29,28 +29,31 @@
 \section{Gauss--Seidel és SOR iteráció}
 
 \begin{mdframed}[backgroundcolor=taskbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
-\textbf{Optimális SOR-tétel (Young-tétel).} \quad
+\textbf{Young-féle optimális SOR-tétel (egy gyakori speciális alak).} \quad
 {\normalfont\small SOR = \textit{Successive Over-Relaxation} (egymást követő túlrelaxáció)}
 
 \medskip
 \textit{Feltételek:}
 \begin{enumerate}[noitemsep,topsep=2pt]
-  \item $A$ szimmetrikus, pozitív definit;
+  \item $A$ szimmetrikus és pozitív definit;
   \item $A$ tridiagonális szerkezetű;
   \item a Jacobi-iteráció $B_J$ mátrixának sajátértékei valósak.
 \end{enumerate}
 
 \medskip
-\textit{Állítás:}\ Ha $\varrho(B_J)<1$, akkor
+\textit{Állítás:} Ha $\varrho(B_J)<1$, akkor az optimális relaxációs paraméter
 \[
-  \omega_0 = \frac{2}{1+\sqrt{1-\varrho(B_J)^2}}
+  \omega_0 = \frac{2}{1+\sqrt{1-\varrho(B_J)^2}},
 \]
-az optimális relaxációs paraméter, és a hozzá tartozó SOR-iteráció spektrálsugara
+és a hozzá tartozó SOR-iteráció spektrálsugara
 \[
   \varrho(B_{\omega_0}) = \omega_0 - 1.
 \]
-Bármely $\omega\in(0,2)$-re $\varrho(B_\omega)<1$ (konvergencia), és
-$\varrho(B_{\omega_0})\le\varrho(B_\omega)$ (optimalitás).
+Továbbá minden $\omega\in(0,2)$ esetén $\varrho(B_\omega)<1$, tehát az SOR-iteráció konvergens, és
+\[
+  \varrho(B_{\omega_0}) \le \varrho(B_\omega),
+\]
+vagyis $\omega_0$ valóban optimális.
 \end{mdframed}
 
 \subsection*{1. feladat -- Gauss--Seidel lépések kézzel}
@@ -131,16 +134,16 @@ Végezz 2 Richardson-lépést kézzel (reziduum-vektoros alakban)!
 \section{Bolzano-tétel és intervallumfelezés}
 \subsection*{7. feladat -- Intervallumfelezés kézzel}
 
-$$f(x) = x^3 - 2x - 5$$, intervallum: $$[2, 3]$$.
+$$f(x) = x^3 - 2x - 5, \quad \textrm{intervallum} [2, 3]$$.
 
-Végezz \textbf{3 intervallumfelezési lépést} kézzel! Töltsd ki a táblázatot:
+Végezz \textbf{3 intervallumfelezési lépést} kézzel az $f(x) = 0$ egyenlet megoldására! Töltsd ki a táblázatot:
 
 \begin{center}
 \begin{tabular}{c|c|c|c|c|c}
 \hline
 $k$ & $a$ & $b$ & $c=\frac{a+b}{2}$ & $f(c)$ & új int.\\
 \hline
-0 & 2 & 3 & 2.5 & $-$0.375 & [2.5, 3]\\
+0 & 2 & 3 & 2.5 &  & [2,2.5] \\
 1 & 2.5 & 3 & \ldots & \ldots & \ldots\\
 2 & \ldots & \ldots & \ldots & \ldots & \ldots\\
 \hline
