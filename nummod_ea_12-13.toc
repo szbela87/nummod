@@ -1,0 +1,12 @@
+\select@language {magyar} \contentsline {part}{I.\hspace {1em}Numerikus integrálás (12.\ hét)}{2}{part.1}%
+\select@language {magyar} \contentsline {section}{\numberline {1}Az alapfeladat és motiváció}{2}{section.1}%
+\select@language {magyar} \contentsline {section}{\numberline {2}Kvadratúra formulák általánosan}{3}{section.2}%
+\select@language {magyar} \contentsline {section}{\numberline {3}Newton--Cotes formulák}{4}{section.3}%
+\select@language {magyar} \contentsline {section}{\numberline {4}Hibaformulák}{6}{section.4}%
+\select@language {magyar} \contentsline {section}{\numberline {5}Összetett formulák}{8}{section.5}%
+\select@language {magyar} \contentsline {part}{II.\hspace {1em}Szinguláris felbontás és általánosított inverz (13.\ hét)}{11}{part.2}%
+\select@language {magyar} \contentsline {section}{\numberline {6}Szinguláris felbontás (SVD)}{11}{section.6}%
+\select@language {magyar} \contentsline {section}{\numberline {7}Az SVD alkalmazása: Eckart--Young-tétel és képtömörítés}{12}{section.7}%
+\select@language {magyar} \contentsline {section}{\numberline {8}Az általánosított inverz (Moore--Penrose-pszeudoinverz)}{13}{section.8}%
+\select@language {magyar} \contentsline {section}{\numberline {9}Az általánosított inverz approximációs tulajdonsága}{15}{section.9}%
+\select@language {magyar} \contentsline {section}{\numberline {10}Legkisebb négyzetek módszere}{16}{section.10}%

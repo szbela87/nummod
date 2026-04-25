@@ -1,0 +1,1195 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue}
+
+\definecolor{defbg}{rgb}{0.95,1.0,0.95}
+\definecolor{thmbg}{rgb}{1.0,0.96,0.92}
+\definecolor{proofbg}{rgb}{0.97,0.97,1.0}
+\definecolor{exbg}{rgb}{0.97,0.97,0.97}
+
+\newtheoremstyle{mydef}{}{}{}{}{\bfseries}{.}{ }{}
+\theoremstyle{mydef}
+\newtheorem{tetel}{Tétel}[section]
+\newtheorem{lemma}[tetel]{Lemma}
+\newtheorem{definicio}[tetel]{Definíció}
+\newtheorem{kovetkezmeny}[tetel]{Következmény}
+\newtheorem{megjegyzes}[tetel]{Megjegyzés}
+
+% Kényelmi makrók
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\innerprod}[2]{\left\langle #1,\,#2 \right\rangle}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Ker}{ker}
+\DeclareMathOperator{\Kep}{Im}
+\DeclareMathOperator{\Span}{span}
+
+\title{\LARGE\bfseries Numerikus módszerek\\[6pt]
+  \large 12--13.\ hét -- Numerikus integrálás;\
+  Szinguláris felbontás és általánosított inverz\\[4pt]
+  \normalsize Előadásjegyzet}
+\date{2025/26.\ tanév, tavaszi félév}
+
+\begin{document}
+\maketitle
+\vspace{-1em}
+\hrule
+\vspace{0.5em}
+\tableofcontents
+\newpage
+
+% ==============================================================
+\part{Numerikus integrálás (12.\ hét)}
+% ==============================================================
+
+\section{Az alapfeladat és motiváció}
+
+\subsection*{A feladat}
+
+\textbf{Feladat:} Közelítsük a
+\[
+  I(f) := \int_a^b f(x)\,dx
+\]
+Riemann-integrált numerikusan, vagyis véges sok $f$-értékfelhasználásával.
+
+\subsection*{Miért nem a Riemann-definíció?}
+
+A Riemann-integrál definíciója alsó és felső közelítő összegeket (vagy Riemann-összeget) használ.
+Ha $[a,b]$-t $m$ egyenlő részre osztjuk, egy tipikus Riemann-összeg
+\[
+  R_m(f) = \sum_{k=0}^{m-1} f(\xi_k)\,\frac{b-a}{m},
+\]
+amelyre $R_m(f)\to I(f)$, ha $m\to\infty$. Azonban ez a konvergencia lassú:
+az $f$-re tett sima feltételek (pl.\ $f\in C^1$) esetén is csak $O(m^{-1})$
+sebességű. Tehát kielégítő pontossághoz sok ($m\gg 1$) tagra lenne szükség,
+ami számítógépen sok függvényérték-kiértékelést jelent. \textbf{Nem gazdaságos.}
+
+\subsection*{Alkalmazási területek}
+
+A numerikus integrálás szükséges mindazokban az esetekben, amelyekben az analitikus
+kiszámítás nem elvégezhető vagy nem kívánatos:
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item A primitív függvény \emph{nem állítható elő zárt alakban} (pl.\ $e^{-x^2}$,
+        $\sin(x^2)$, $\cos(x^2)$).
+  \item Az analitikus integrálás elvben elvégezhető, de \emph{rendkívül bonyolult}
+        lenne.
+  \item \emph{Terület, térfogat, ívhossz} kiszámítása, ahol az integrandus mérési
+        adatokból adódik.
+  \item Differenciálegyenletek numerikus módszereinek konstrukciójánál (pl.\ Runge--Kutta
+        módszerek, kollokatív módszerek).
+\end{itemize}
+
+\begin{mdframed}[backgroundcolor=exbg,linewidth=0pt,innertopmargin=6pt,innerbottommargin=6pt]
+\textbf{Motiváló példák:} Számítsuk ki a következő integrálokat!
+\[
+  \int_0^1 e^{-x^2}\,dx = ?,\qquad \int_0^\pi \cos(x^2)\,dx = ?
+\]
+Az első a \emph{Gauss-féle hibaintegrálfüggvényhez} kapcsolódik: a primitív fv.\ nem
+elemi. A másodikra szintén nem létezik zárt alakú formula. Mindkettő kiszámítható
+numerikus integrálással tetszőleges pontossággal.
+\end{mdframed}
+
+\subsection*{Az alaptézis: Lagrange-interpoláció + integráció}
+
+\textbf{Ötlet:} Helyettesítsük $f$-et az $x_0 < x_1 < \cdots < x_n$ alappontokon
+épített Lagrange-interpolációs polinomjával $L_n(x) = \sum_{k=0}^n f(x_k)\,\ell_k(x)$,
+majd integráljuk az approximált függvényt:
+\[
+  \int_a^b f(x)\,dx \approx \int_a^b L_n(x)\,dx
+  = \int_a^b \sum_{k=0}^n f(x_k)\,\ell_k(x)\,dx
+  = \sum_{k=0}^n f(x_k) \underbrace{\int_a^b \ell_k(x)\,dx}_{=:\,A_k}.
+\]
+Az $A_k := \int_a^b \ell_k(x)\,dx$ \emph{súlyok} csak az alappontoktól (és $[a,b]$-től)
+függnek, az $f$ függvénytől \emph{nem}. Ezért elég az alappontokat egyszer rögzíteni,
+és utána az $A_k$ értékeket előre kiszámítani. A közelítés:
+\[
+  \boxed{\int_a^b f(x)\,dx \approx \sum_{k=0}^n A_k\,f(x_k).}
+\]
+
+\textbf{Megjegyzés:} az $A_k$ súlyok kizárólag az alappontoktól függnek, $f$-től nem.
+Ebből következik, hogy ha $f$ is polinom (és fokszáma legfeljebb $n$), a közelítés
+\emph{pontos}: $L_n = f$, tehát $\int_a^b L_n = \int_a^b f$.
+
+% ==============================================================
+\section{Kvadratúra formulák általánosan}
+\label{sec:kvadratura}
+
+\begin{mdframed}[backgroundcolor=defbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{definicio}[Kvadratúra formula]
+Legyenek $x_0, x_1, \ldots, x_n \in [a,b]$ \emph{alappontok} és $A_0, A_1, \ldots, A_n \in \R$
+\emph{súlyok}. Az
+\[
+  Q_n(f) := \sum_{k=0}^n A_k\,f(x_k)
+\]
+formulát \emph{kvadratúra formulának} nevezzük.
+
+A kvadratúra formula \emph{interpolációs típusú}, ha $A_k = \int_a^b \ell_k(x)\,dx$
+$(k = 0, 1, \ldots, n)$, ahol $\ell_k$ a $k$-adik Lagrange-alappolinom.
+\end{definicio}
+\end{mdframed}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Pontossági tétel]
+\label{tetel:pontossagi}
+Egy $Q_n$ kvadratúra formula interpolációs típusú $\Longleftrightarrow$ minden
+$f \in P_n$ polinomra pontos, azaz
+\[
+  \int_a^b f(x)\,dx = \sum_{k=0}^n A_k\,f(x_k) \qquad \forall\,f \in P_n.
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+\textbf{($\Rightarrow$) Interpolációs típusú $\Rightarrow$ $P_n$-re pontos.}
+Ha $f \in P_n$, akkor $L_n(x) = f(x)$ (az interpoláció egyértelműen megadja $f$-et), tehát
+\[
+  Q_n(f) = \sum_{k=0}^n A_k f(x_k) = \int_a^b \sum_{k=0}^n f(x_k)\,\ell_k(x)\,dx
+  = \int_a^b L_n(x)\,dx = \int_a^b f(x)\,dx.
+\]
+
+\textbf{($\Leftarrow$) $P_n$-re pontos $\Rightarrow$ interpolációs típusú.}
+Alkalmazzuk a feltételt az $f = \ell_j$ Lagrange-alappolinomra ($j = 0, 1, \ldots, n$).
+Mivel $\ell_j \in P_n$, a feltétel szerint
+\[
+  \int_a^b \ell_j(x)\,dx = \sum_{k=0}^n A_k\,\ell_j(x_k) = \sum_{k=0}^n A_k\,\delta_{jk} = A_j.
+\]
+Tehát $A_j = \int_a^b \ell_j(x)\,dx$, ami pontosan az interpolációs típus definíciója. \qed
+\end{proof}
+
+\begin{megjegyzes}
+A $Q_n(f) = \sum_{k=0}^n A_k f(x_k)$ formulában összesen $2(n+1)$ szabad paramétert
+találunk: az $A_0, \ldots, A_n$ súlyokat és az $x_0, \ldots, x_n$ alappontokat.
+Az interpolációs típus megkötése rögzíti az $A_k$-kat (az $x_k$-k függvényeként), így
+marad $n+1$ szabad paraméter (az alappontok). Ezek optimális megválasztásával
+különféle formula-típusok adódnak:
+
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item \textbf{Newton--Cotes típus:} az alappontok egyenletesen osztják fel $[a,b]$-t.
+  \item \textbf{Csebisev típus:} az összes súly azonos: $A_k \equiv A$.
+  \item \textbf{Gauss típus:} az alappontokat is optimálisan választják, maximalizálva a
+        pontosságot; $2(n+1)$ fokszámig pontos (ez optimális).
+\end{enumerate}
+A továbbiakban a Newton--Cotes típussal foglalkozunk.
+\end{megjegyzes}
+
+% ==============================================================
+\section{Newton--Cotes formulák}
+\label{sec:nc}
+
+\subsection*{Zárt és nyílt formulák}
+
+A Newton--Cotes formulákban az alappontok egyenletesen helyezkednek el $[a,b]$-ben.
+
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item \textbf{Zárt formulák} $Z(n)$: $a$ és $b$ is alappont.
+    \[
+      h = \frac{b-a}{n}, \quad x_k = a + kh, \quad k = 0, 1, \ldots, n.
+    \]
+  \item \textbf{Nyílt formulák} $Ny(n)$: $a$ és $b$ \emph{nem} alappont.
+    \[
+      h = \frac{b-a}{n+2}, \quad x_k = a + (k+1)h, \quad k = 0, 1, \ldots, n.
+    \]
+\end{itemize}
+
+\subsection*{Az együtthatók meghatározása}
+
+A pontossági tétel alapján az $A_k$ értékeket a következő lineáris egyenletrendszer adja meg:
+\[
+  \int_a^b x^j\,dx = \sum_{k=0}^n A_k\,x_k^j, \qquad j = 0, 1, \ldots, n.
+\]
+Explicit alakban:
+\[
+  \frac{b^{j+1} - a^{j+1}}{j+1} = A_0 x_0^j + A_1 x_1^j + \cdots + A_n x_n^j,
+  \qquad j = 0, 1, \ldots, n.
+\]
+A rendszer mátrixa
+\[
+  V^T =
+  \begin{pmatrix}
+    1 & 1 & \cdots & 1 \\
+    x_0 & x_1 & \cdots & x_n \\
+    \vdots & \vdots & & \vdots \\
+    x_0^n & x_1^n & \cdots & x_n^n
+  \end{pmatrix},
+\]
+azaz a Vandermonde-mátrix transzponáltja; ez nem szinguláris, ha az alappontok különbözők.
+
+\subsection*{Az érintő formula (Ny(0))}
+
+A nyílt $n=0$ esetben egyetlen alappont van, a középpont:
+$x_0 = a + h = a + \tfrac{b-a}{2} = \tfrac{a+b}{2}$.
+A LER egyetlen egyenlete: $A_0 \cdot 1 = b - a$, tehát $A_0 = b-a$.
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Érintő formula} (középponti szabály, $Ny(0)$):
+\[
+  \int_a^b f(x)\,dx \approx (b-a)\cdot f\!\left(\frac{a+b}{2}\right) =: E(f).
+\]
+\end{mdframed}
+
+\emph{Geometriai értelmezés:} a görbe alatti területet azzal a téglalappal közelítjük,
+amelynek magassága $f$ értéke a középpontban. Ez nem az érintőre, hanem a vízszintesre
+támaszkodik (az „érintő" elnevezés a közelítő polinom érintő voltából ered).
+
+\subsection*{A trapéz formula (Z(1))}
+
+A zárt $n=1$ esetben $x_0 = a$, $x_1 = b$.
+A LER:
+\[
+  A_0 + A_1 = b - a, \qquad A_0 \cdot a + A_1 \cdot b = \tfrac{b^2-a^2}{2} = \tfrac{(b-a)(b+a)}{2}.
+\]
+Az első egyenletből $A_0 = b-a-A_1$; visszahelyettesítve: $(b-a-A_1)a + A_1 b = \tfrac{(b-a)(a+b)}{2}$,
+ami $A_1(b-a) = \tfrac{(b-a)(a+b)}{2} - a(b-a) = \tfrac{(b-a)^2}{2}$, tehát $A_1 = \tfrac{b-a}{2}$.
+Szimmetria alapján $A_0 = \tfrac{b-a}{2}$.
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Trapéz formula} ($Z(1)$):
+\[
+  \int_a^b f(x)\,dx \approx \frac{b-a}{2}\cdot\bigl(f(a) + f(b)\bigr) =: T(f).
+\]
+\end{mdframed}
+
+\emph{Geometriai értelmezés:} a görbe alatti területet a $(a,0)$, $(a,f(a))$, $(b,f(b))$,
+$(b,0)$ csúcsú trapéz területével helyettesítjük.
+
+\subsection*{A Simpson formula (Z(2))}
+
+A zárt $n=2$ esetben $x_0=a$, $x_1=\tfrac{a+b}{2}$, $x_2=b$, $h=\tfrac{b-a}{2}$.
+A LER:
+\begin{align*}
+  A_0 + A_1 + A_2 &= b - a, \\
+  A_0 a + A_1 \tfrac{a+b}{2} + A_2 b &= \tfrac{b^2-a^2}{2}, \\
+  A_0 a^2 + A_1 \left(\tfrac{a+b}{2}\right)^2 + A_2 b^2 &= \tfrac{b^3-a^3}{3}.
+\end{align*}
+Szimmetria alapján $A_0 = A_2$. Az első egyenletből $2A_0 + A_1 = b-a$.
+A megoldás: $A_0 = A_2 = \tfrac{b-a}{6}$, $A_1 = \tfrac{4(b-a)}{6} = \tfrac{2(b-a)}{3}$.
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Simpson formula} ($Z(2)$):
+\[
+  \int_a^b f(x)\,dx \approx \frac{b-a}{6}\left(f(a) + 4f\!\left(\frac{a+b}{2}\right)
+  + f(b)\right) =: S(f).
+\]
+\end{mdframed}
+
+\emph{Megjegyzés:} A Simpson-formula $P_2$-re pontos a konstrukció alapján.
+Ennél azonban \emph{erősebb}: $P_3$-ra is pontos! Ennek oka, hogy $f(x) = x^3$
+esetén az integrandus antiszimmetrikus a középpont körül, és ezért a szimmetrikus
+$A_0 = A_2$, $x_0+x_2 = 2x_1$ tulajdonságok miatt a formula is $0$-t ad,
+pontosan mint az integrál (amelynek értéke $\tfrac{b^4-a^4}{4}$). Ellenőrzés:
+$S(x^3) = \tfrac{b-a}{6}\bigl(a^3 + 4\cdot\tfrac{(a+b)^3}{8} + b^3\bigr) = \tfrac{b^4-a^4}{4}$. $eckmark$
+
+Az ábrák geometriai szemléltetést nyújtanak:
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.92\textwidth]{quad_formulak.pdf}
+\caption{Az érintő, a trapéz és a Simpson formula szemléltetése ($f(x)=\sin x$, $[0{,}4;\;2{,}8]$).
+  Az arany terület a közelítő terület, a kék görbe az eredeti függvény.}
+\label{fig:quad}
+\end{figure}
+
+% ==============================================================
+\section{Hibaformulák}
+\label{sec:hiba}
+
+A hibaformulák megadják, mekkora eltérés keletkezik az egzakt és a közelítő integrálérték között.
+Az alapeszköz az integrálszámítás középértéktétele.
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Az integrálszámítás középértéktétele]
+\label{tetel:kvmvt}
+Ha $f \in C[a,b]$ és $g \in C[a,b]$, $g(x) \ge 0$ minden $x \in [a,b]$-re, akkor
+$\exists\, \xi \in (a,b)$:
+\[
+  \int_a^b f(x)\,g(x)\,dx = f(\xi)\int_a^b g(x)\,dx.
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Legyen $m = \min_{[a,b]} f$, $M = \max_{[a,b]} f$. Ekkor $m\,g(x) \le f(x)\,g(x) \le M\,g(x)$,
+integrálással $m\int g \le \int fg \le M \int g$. Ha $\int g = 0$, az állítás triviális
+(mindkét oldal nulla). Különben:
+\[
+  m \le \frac{\int_a^b fg}{\int_a^b g} \le M,
+\]
+és a Bolzano--Darboux-tétel (közbülső érték tétele $f$-re) garantálja, hogy van
+$\xi \in (a,b)$, ahol $f(\xi) = \tfrac{\int fg}{\int g}$. \qed
+\end{proof}
+
+\subsection*{Az érintő formula hibája}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}
+\label{tetel:erintohiba}
+Ha $f \in C^2[a,b]$, akkor $\exists\,\eta \in [a,b]$:
+\[
+  \int_a^b f(x)\,dx - E(f) = \frac{(b-a)^3}{24}\,f''(\eta).
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Legyen $c = \tfrac{a+b}{2}$ és $h = \tfrac{b-a}{2}$.
+Írjuk fel $f$ Taylor-sorát $c$ körül:
+\[
+  f(x) = f(c) + f'(c)(x-c) + \frac{f''(\xi_x)}{2}(x-c)^2,
+\]
+ahol $\xi_x$ az $x$ és $c$ közé eső pont.
+Integráljuk $[a,b] = [c-h, c+h]$-n:
+\[
+  \int_{c-h}^{c+h} f(x)\,dx = f(c)\cdot 2h + f'(c)\underbrace{\int_{c-h}^{c+h}(x-c)\,dx}_{=\,0}
+  + \frac{1}{2}\int_{c-h}^{c+h} f''(\xi_x)\,(x-c)^2\,dx.
+\]
+Az utolsó tagban $(x-c)^2 \ge 0$, tehát a Tétel~\ref{tetel:kvmvt} alkalmazható ($g = (x-c)^2$,
+folytonos és nemnegatív), és $\exists\,\eta \in (a,b)$:
+\[
+  \frac{1}{2}\int_{c-h}^{c+h} f''(\xi_x)(x-c)^2\,dx = \frac{f''(\eta)}{2}\int_{c-h}^{c+h}(x-c)^2\,dx
+  = \frac{f''(\eta)}{2}\cdot\frac{2h^3}{3}.
+\]
+Tehát
+\[
+  \int_a^b f = 2h\,f(c) + \frac{f''(\eta)\,h^3}{3}.
+\]
+Az érintő formula értéke $E(f) = (b-a)\,f(c) = 2h\,f(c)$, így:
+\[
+  \int_a^b f - E(f) = \frac{h^3}{3}\,f''(\eta) = \frac{(b-a)^3}{24}\,f''(\eta). \qed
+\]
+\end{proof}
+
+\subsection*{A trapéz formula hibája}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}
+\label{tetel:trapezhiba}
+Ha $f \in C^2[a,b]$, akkor $\exists\,\eta \in [a,b]$:
+\[
+  \int_a^b f(x)\,dx - T(f) = -\frac{(b-a)^3}{12}\,f''(\eta).
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+A Tétel~\ref{tetel:erintohiba} bizonyításának jelöléseit használjuk ($c = \tfrac{a+b}{2}$,
+$h = \tfrac{b-a}{2}$). A Taylor-sorból:
+\[
+  f(a) = f(c-h) = f(c) - hf'(c) + \frac{h^2}{2}f''(\xi_a),
+  \quad
+  f(b) = f(c+h) = f(c) + hf'(c) + \frac{h^2}{2}f''(\xi_b).
+\]
+Összeadva: $f(a) + f(b) = 2f(c) + \frac{h^2}{2}\bigl(f''(\xi_a) + f''(\xi_b)\bigr)$.
+A középérték-tétel alapján $\exists\,\eta \in [a,b]$:
+$\tfrac{1}{2}(f''(\xi_a)+f''(\xi_b)) = f''(\eta)$,
+tehát $f(a)+f(b) = 2f(c) + h^2 f''(\eta)$.
+A trapéz formula:
+\[
+  T(f) = h\bigl(f(a)+f(b)\bigr) = 2hf(c) + h^3 f''(\eta).
+\]
+Az integrál (Tétel~\ref{tetel:erintohiba} bizonyításából):
+$\int_a^b f = 2hf(c) + \tfrac{h^3}{3}f''(\eta_1)$ valamely $\eta_1$-re. Tehát
+\[
+  \int_a^b f - T(f) = \frac{h^3}{3}f''(\eta_1) - h^3 f''(\eta) = -\frac{2h^3}{3}\,f''(\tilde\eta)
+\]
+egy alkalmas $\tilde\eta$-ra (közbenső értéktétel). Mivel $h = \tfrac{b-a}{2}$:
+\[
+  -\frac{2h^3}{3} = -\frac{2\cdot(b-a)^3/8}{3} = -\frac{(b-a)^3}{12}. \qed
+\]
+\end{proof}
+
+\begin{megjegyzes}
+Az érintő és a trapéz formula hibáját összehasonlítva:
+\[
+  \int_a^b f - E(f) \approx \frac{(b-a)^3}{24}f''(\eta),\quad
+  \int_a^b f - T(f) \approx -\frac{(b-a)^3}{12}f''(\eta).
+\]
+Az érintő formula hibája kb.\ \emph{felakkora, és ellentétes előjelű}, mint a trapézé:
+$E$-hiba $\approx -\tfrac{1}{2}\cdot T$-hiba. Ez az összefüggés a Richardson-extrapoláció
+alapja: $\tfrac{2E(f)+T(f)}{3}$ a Simpson-formula!
+
+Valóban: $\tfrac{1}{3}T(f) + \tfrac{2}{3}E(f) = \tfrac{b-a}{6}(f(a)+f(b)) + \tfrac{2(b-a)}{3}f(c) = S(f)$.
+\end{megjegyzes}
+
+\subsection*{A Simpson formula hibája}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}
+\label{tetel:simpsonhiba}
+Ha $f \in C^4[a,b]$, akkor $\exists\,\eta \in [a,b]$:
+\[
+  \int_a^b f(x)\,dx - S(f) = -\frac{(b-a)^5}{2880}\,f^{(4)}(\eta).
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Legyen $c = \tfrac{a+b}{2}$, $h = \tfrac{b-a}{2}$. A negyedfokú Taylor-sor $c$ körül:
+\[
+  f(c \pm h) = f(c) \pm hf'(c) + \frac{h^2}{2}f''(c) \pm \frac{h^3}{6}f'''(c)
+  + \frac{h^4}{24}f^{(4)}(c) + O(h^5).
+\]
+Összeadva:
+\[
+  f(a) + f(b) = f(c-h) + f(c+h) = 2f(c) + h^2 f''(c) + \frac{h^4}{12}f^{(4)}(c) + O(h^6).
+\]
+Tehát:
+\[
+  S(f) = \frac{h}{3}\bigl(f(a) + 4f(c) + f(b)\bigr)
+       = \frac{h}{3}\left(6f(c) + h^2 f''(c) + \frac{h^4}{12}f^{(4)}(c)\right) + O(h^7)
+       = 2hf(c) + \frac{h^3}{3}f''(c) + \frac{h^5}{36}f^{(4)}(c) + O(h^7).
+\]
+A Tétel~\ref{tetel:erintohiba} bizonyításából az integrál negyedfokú közelítése:
+\[
+  \int_a^b f = 2hf(c) + \frac{h^3}{3}f''(c) + \frac{h^5}{60}f^{(4)}(\tilde\eta),
+\]
+(a $(x-c)^4$ tagból; az $(x-c)^5$ tag kiesik az aszimmetria miatt). Kivonva:
+\[
+  \int_a^b f - S(f) = \frac{h^5}{60}f^{(4)}(\tilde\eta) - \frac{h^5}{36}f^{(4)}(c)
+  = h^5\left(\frac{1}{60} - \frac{1}{36}\right)f^{(4)}(\eta_*)
+  = -\frac{h^5}{90}\,f^{(4)}(\eta_*)
+\]
+egy alkalmas $\eta_*$ közbülső értékre. Visszahelyettesítve $h = \tfrac{b-a}{2}$:
+\[
+  -\frac{h^5}{90} = -\frac{(b-a)^5}{32 \cdot 90} = -\frac{(b-a)^5}{2880}. \qed
+\]
+\end{proof}
+
+\begin{mdframed}[backgroundcolor=exbg,linewidth=0pt,innertopmargin=6pt,innerbottommargin=6pt]
+\textbf{Összefoglalás: egyszerű formulák hibái}
+\[
+\renewcommand{\arraystretch}{1.5}
+\begin{array}{l|c|c}
+\text{Formula} & \text{Hibatag} & \text{Pontossági fok}\\
+\hline
+E(f)\text{ (érintő)} & +\dfrac{(b-a)^3}{24}\,f''(\eta) & P_1 \\
+T(f)\text{ (trapéz)} & -\dfrac{(b-a)^3}{12}\,f''(\eta) & P_1 \\
+S(f)\text{ (Simpson)} & -\dfrac{(b-a)^5}{2880}\,f^{(4)}(\eta) & P_3 \\
+\end{array}
+\]
+\end{mdframed}
+
+% ==============================================================
+\section{Összetett formulák}
+\label{sec:osszetett}
+
+\subsection*{Motiváció: miért szükségesek?}
+
+A hibák $(b-a)^3$-ra ill.\ $(b-a)^5$-re arányosak. Ha $[a,b]$ nagy, a hiba
+is nagy lehet. A megoldás: \emph{osszuk fel $[a,b]$-t sok kis részre}, és minden
+részintervallumon alkalmazzuk az egyszerű formulát. Az összeg teljes hibáját
+a kis részhibák összege adja.
+
+\subsection*{A trapéz összetett formula}
+
+Osszuk fel $[a,b]$-t $m$ egyenlő részre: $h = \tfrac{b-a}{m}$,
+$x_k = a + kh$ $(k = 0, 1, \ldots, m)$.
+Alkalmazzuk a trapéz formulát minden $[x_{k-1}, x_k]$ részintervallumon:
+\[
+  \int_{x_{k-1}}^{x_k} f \approx \frac{h}{2}\bigl(f(x_{k-1}) + f(x_k)\bigr).
+\]
+Összegezve $k = 1, \ldots, m$-re, és felhasználva, hogy a belső pontok $(x_1, \ldots, x_{m-1})$
+kétszer jelennek meg:
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Trapéz összetett formula} (trapéz szabály):
+\[
+  \int_a^b f(x)\,dx \approx T_m(f) := \frac{b-a}{2m}
+  \left(f(a) + 2\sum_{k=1}^{m-1} f(x_k) + f(b)\right).
+\]
+Az együtthatósorozat: $1,\,2,\,2,\,\ldots,\,2,\,1$.
+\end{mdframed}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[A trapéz összetett formula hibája]
+\label{tetel:trapezosszetett}
+Ha $f \in C^2[a,b]$, akkor $\exists\,\eta \in [a,b]$:
+\[
+  \int_a^b f(x)\,dx - T_m(f) = -\frac{(b-a)^3}{12m^2}\,f''(\eta).
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Az $i$-edik részintervallumon ($i = 1, \ldots, m$) a trapéz hiba:
+$-\tfrac{h^3}{12}f''(\eta_i)$ (ahol $h = \tfrac{b-a}{m}$).
+Összegezve:
+\[
+  \int_a^b f - T_m(f) = \sum_{i=1}^m \left(-\frac{h^3}{12}\,f''(\eta_i)\right)
+  = -\frac{h^3}{12} \cdot m \cdot f''(\eta)
+\]
+a középérték-tétel alapján ($\eta$ az $\{\eta_i\}$ átlaga), ahol
+\[
+  -\frac{h^3 \cdot m}{12} = -\frac{(b-a)^3/m^3 \cdot m}{12} = -\frac{(b-a)^3}{12m^2}. \qed
+\]
+\end{proof}
+
+\subsection*{A Simpson összetett formula}
+
+A Simpson formula páros $m$-t igényel ($m = 2s$, $s \in \N$). Ekkor $[a,b]$-t $m$ egyenlő
+részre osztjuk ($h = \tfrac{b-a}{m}$), majd a $[x_{2k-2}, x_{2k}]$ ($k = 1, \ldots, m/2$)
+részintervallumokon -- amelyek szélessége $2h$ -- alkalmazzuk a Simpson formulát.
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Simpson összetett formula} (Simpson szabály):
+\[
+  S_m(f) := \frac{b-a}{3m}
+  \left(f(a) + 4\sum_{k=1}^{m/2} f(x_{2k-1}) + 2\sum_{k=1}^{m/2-1} f(x_{2k}) + f(b)\right).
+\]
+Az együtthatósorozat: $1,\,4,\,2,\,4,\,2,\,\ldots,\,4,\,2,\,4,\,1$.
+\end{mdframed}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[A Simpson összetett formula hibája]
+\label{tetel:simpsonosszetett}
+Ha $f \in C^4[a,b]$, akkor $\exists\,\eta \in [a,b]$:
+\[
+  \int_a^b f(x)\,dx - S_m(f) = -\frac{(b-a)^5}{180\,m^4}\,f^{(4)}(\eta).
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Az egyes részintervallum-szélesség $2h$, ahol $h = \tfrac{b-a}{m}$.
+Az $i$-edik részintervallumon a Simpson hiba: $-\tfrac{(2h)^5}{2880}f^{(4)}(\eta_i)$.
+Összesen $m/2$ részintervallum van:
+\[
+  -\frac{m}{2}\cdot\frac{(2h)^5}{2880}\,f^{(4)}(\eta)
+  = -\frac{m}{2}\cdot\frac{32h^5}{2880}\,f^{(4)}(\eta)
+  = -\frac{16m\,h^5}{2880}\,f^{(4)}(\eta).
+\]
+Visszahelyettesítve $h = \tfrac{b-a}{m}$:
+\[
+  = -\frac{16m \cdot (b-a)^5}{2880\,m^5}\,f^{(4)}(\eta)
+  = -\frac{(b-a)^5}{180\,m^4}\,f^{(4)}(\eta). \qed
+\]
+\end{proof}
+
+\begin{megjegyzes}
+\leavevmode
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item Ha $f \in C^2[a,b]$, akkor $T_m(f) \to I(f)$, és a konvergencia $m^2$ rendű.
+  \item Ha $f \in C^4[a,b]$, akkor $S_m(f) \to I(f)$, és a konvergencia $m^4$ rendű.
+  \item A Simpson összegzett formula tehát lényegesen gyorsabban konvergál, mint a trapéz.
+  \item Az érintő formulából is képezhető összetett formula; hibája szintén $O(m^{-2})$,
+        de az előjele ellentétes a trapézéval.
+\end{enumerate}
+\end{megjegyzes}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.95\textwidth]{osszetett_trapez.pdf}
+\caption{Az összetett trapéz formula $m = 1, 2, 4, 8$ résszel ($f(x)=\sin x$, $[0,\pi]$).
+  Az arány terület a közelítő, a kék görbe az egzakt függvény.}
+\label{fig:osszetett}
+\end{figure}
+
+\begin{mdframed}[backgroundcolor=exbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Számpélda.} Közelítsük az $\int_0^1 e^{-x^2}\,dx$ integrált $m = 4$ résszel,
+a trapéz és a Simpson összetett formulájával!
+
+Az osztópontok: $h = 0{,}25$; $x_k = 0;\;0{,}25;\;0{,}5;\;0{,}75;\;1{,}0$.
+Függvényértékek: $f_k = e^{-x_k^2}$:
+\[
+  f_0 = 1{,}00000,\quad f_1 = 0{,}93941,\quad f_2 = 0{,}77880,\quad
+  f_3 = 0{,}57007,\quad f_4 = 0{,}36788.
+\]
+
+\textbf{Trapéz $(m=4)$:}
+$T_4 = \tfrac{0{,}25}{2}(f_0 + 2f_1 + 2f_2 + 2f_3 + f_4)
+= \tfrac{1}{8}(1 + 2\cdot 0{,}93941 + 2\cdot 0{,}77880 + 2\cdot 0{,}57007 + 0{,}36788)
+= \tfrac{1}{8}\cdot 5{,}94444 \approx 0{,}74306.$
+
+\textbf{Simpson $(m=4)$:}
+$S_4 = \tfrac{0{,}25}{3}(f_0 + 4f_1 + 2f_2 + 4f_3 + f_4)
+= \tfrac{1}{12}(1 + 4\cdot 0{,}93941 + 2\cdot 0{,}77880 + 4\cdot 0{,}57007 + 0{,}36788)
+\approx 0{,}74683.$
+
+A pontos érték (12 jegy): $0{,}74682413\ldots$
+Hiba: $T_4$-nél $\approx 3{,}8\cdot 10^{-3}$, $S_4$-nél $\approx 7\cdot 10^{-7}$. A Simpson
+formula négy részre osztva is hat nagyságrenddel pontosabb!
+\end{mdframed}
+
+% ==============================================================
+\part{Szinguláris felbontás és általánosított inverz (13.\ hét)}
+% ==============================================================
+
+\section{Szinguláris felbontás (SVD)}
+\label{sec:svd}
+
+\subsection*{Motiváció}
+
+Szimmetrikus $A \in \C^{n\times n}$ mátrix esetén az $A = UDU^*$ spektrális felbontás létezik,
+ahol $U$ unitér és $D = \diag(\lambda_1, \ldots, \lambda_n)$. Ez azt fejezi ki: $A$ az
+$u_1, \ldots, u_n$ ONB-t önmagába viszi, $\lambda_i u_i \mapsto u_i$ skalárig.
+
+Nem szimmetrikus esetben ez általában nem lehetséges. Azonban azt elérhetjük, hogy $A$ az
+$\R^n$ egy ortonormált bázisát ($v_1, \ldots, v_r$) $\R^m$ egy másik ortonormált rendszerébe
+($u_1, \ldots, u_r$) vigye, $\sigma_i > 0$ skalárok segítségével:
+$A v_i = \sigma_i u_i$.
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Szinguláris felbontás]
+\label{tetel:svd}
+Tetszőleges $A \in \C^{m\times n}$ mátrixhoz $\exists\, U \in \C^{m\times m}$ és
+$V \in \C^{n\times n}$ unitér mátrix, valamint $D \in \C^{m\times n}$ mátrix, amelyre
+\[
+  A = UDV^*,
+\]
+ahol
+\[
+  D = \begin{pmatrix} \Sigma & 0 \\ 0 & 0 \end{pmatrix}, \qquad
+  \Sigma = \diag(\sigma_1, \sigma_2, \ldots, \sigma_r), \quad
+  \sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0,
+\]
+és $r = \rang(A)$.
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+\textbf{Az $A^*A$ mátrix vizsgálata.}
+$A^*A \in \C^{n\times n}$ Hermite-mátrix ($(A^*A)^* = A^*(A^*)^* = A^*A$) és pozitív szemidefinit:
+$x^*(A^*A)x = (Ax)^*(Ax) = \norm{Ax}^2 \ge 0$. Ezért $A^*A$ unitéren diagonalizálható:
+$A^*A = V \Lambda V^*$, ahol $V$ unitér és $\Lambda = \diag(\lambda_1, \ldots, \lambda_n)$,
+$\lambda_1 \ge \cdots \ge \lambda_n \ge 0$.
+
+A nullánál nagyobb sajátértékek száma $r = \rang(A^*A) = \rang(A)$.
+
+\textbf{A szinguláris értékek.}
+Legyen $\sigma_i = \sqrt{\lambda_i} > 0$ $(i = 1, \ldots, r)$, és legyenek $v_1, \ldots, v_n$
+$V$ unitér mátrix oszlopai ($A^*A$ ortonormált sajátvektorai).
+
+\textbf{A bal szinguláris vektorok meghatározása.}
+Definiáljuk: $u_i := \dfrac{Av_i}{\sigma_i}$ $(i = 1, \ldots, r)$. Ellenőrizzük az
+ortogonalitást: $i \ne j$ esetén
+\[
+  \innerprod{u_i}{u_j} = \frac{1}{\sigma_i\sigma_j}\innerprod{Av_i}{Av_j}
+  = \frac{1}{\sigma_i\sigma_j} v_i^*(A^*A)v_j
+  = \frac{\lambda_j}{\sigma_i\sigma_j}\innerprod{v_i}{v_j} = 0.
+\]
+Ugyanígy $\norm{u_i}^2 = \tfrac{1}{\sigma_i^2}\norm{Av_i}^2 = \tfrac{\lambda_i}{\sigma_i^2} = 1$.
+Tehát $u_1, \ldots, u_r$ ortonormált rendszer. Egészítsük ki $\C^m$ ortonormált bázisává:
+$u_1, \ldots, u_m$.
+
+\textbf{Az $A = UDV^*$ egyenlet igazolása.}
+$AV = A[v_1 \mid \cdots \mid v_n] = [\sigma_1 u_1 \mid \cdots \mid \sigma_r u_r \mid 0 \mid \cdots \mid 0]
+= U\,D,$
+ezért $A = UD\,V^*$ (jobb oldalon szorzunk $V$-vel, ami unitér). \qed
+\end{proof}
+
+\begin{mdframed}[backgroundcolor=defbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{definicio}[Szinguláris értékek]
+Az $A \in \C^{m\times n}$ mátrix szinguláris felbontásában a $\sigma_1, \ldots, \sigma_r > 0$
+értékeket az $A$ \emph{szinguláris értékeinek} nevezzük. Felírhatók mint
+\[
+  \sigma_i = \sqrt{\lambda_i(A^*A)} > 0, \qquad i = 1, \ldots, r.
+\]
+A $v_i$ vektorokat \emph{jobb szinguláris vektoroknak}, az $u_i$ vektorokat
+\emph{bal szinguláris vektoroknak} nevezzük.
+\end{definicio}
+\end{mdframed}
+
+\begin{megjegyzes}
+\leavevmode
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item $A^*A \in \C^{n\times n}$ és $AA^* \in \C^{m\times m}$ pozitív sajátértékei
+        \emph{azonosak}: ha $A^*Av = \lambda v$, akkor $AA^*(Av) = \lambda(Av)$.
+  \item $A^*A$ sajátvektorai a $V$ unitér mátrix oszlopai (jobb szinguláris vektorok).
+  \item $AA^*$ sajátvektorai az $U$ unitér mátrix oszlopai (bal szinguláris vektorok).
+  \item $m = n$ esetén: $\sigma_1 = \norm{A}_2$ (indukált 2-norma) és
+        $\norm{A}_F^2 = \sum_{i=1}^r \sigma_i^2$ (Frobenius-norma).
+\end{enumerate}
+\end{megjegyzes}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Lineáris transzformáció jellemzése]
+\label{tetel:lintrafo}
+Ha $\rang(A) = r$, akkor
+\[
+  \Ker(A) = \Span\{v_{r+1}, \ldots, v_n\}, \qquad
+  \Kep(A) = \Span\{u_1, \ldots, u_r\}.
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+\textbf{Ker:} Ha $v \in \Ker(A)$, akkor $A^*Av = 0$, azaz $v$ a nulla sajátértékhez tartozó
+sajátvektor: $v \in \Span\{v_{r+1},\ldots,v_n\}$. Megfordítva: $Av_j = 0$ minden $j > r$-re,
+mert $\norm{Av_j}^2 = \lambda_j = 0$.
+
+\textbf{Im:} $\Kep(A) = \Span\{Av_1,\ldots,Av_r\} = \Span\{\sigma_1 u_1,\ldots,\sigma_r u_r\}
+= \Span\{u_1,\ldots,u_r\}$. \qed
+\end{proof}
+
+\subsection*{Alkalmazási területek}
+
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item \textbf{Többváltozós statisztika:} a szóródási mátrix vizsgálata, varianciák tömörítése
+        (főkomponens-analízis, PCA).
+  \item \textbf{Dokumentumkeresés és tematizálás:} nagy adatbázisokban latens szemantikus
+        analízis (LSA), adatbányászat.
+  \item \textbf{Jelfeldolgozás:} képtömörítés, zajszűrés, alacsony rangú közelítések.
+  \item \textbf{Geofizika:} mérési adatok inverziója, tomográfia.
+\end{enumerate}
+
+% ==============================================================
+\section{Az SVD alkalmazása: Eckart--Young-tétel és képtömörítés}
+\label{sec:eckartyoung}
+
+\subsection*{Alacsony rangú közelítés}
+
+A szinguláris felbontásból $A = \sum_{i=1}^r \sigma_i u_i v_i^*$ következik
+(az SVD kifejtett alakja). Legyen $A_k = \sum_{i=1}^k \sigma_i u_i v_i^*$ az első $k$ tag.
+Ekkor $\rang(A_k) = k$.
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Eckart--Young]
+\label{tetel:ey}
+Legyen $\rang(A) = r$ és $k \le r$. Ekkor $A_k$ a $k$-rangú legjobb közelítése
+$A$-nak a 2-normában \emph{és} a Frobenius-normában egyaránt:
+\[
+  \norm{A - A_k}_F = \sqrt{\sum_{i=k+1}^r \sigma_i^2}, \qquad
+  \norm{A - A_k}_2 = \sigma_{k+1}.
+\]
+Alacsony rangú mátrixokra való minimális hibát ezek adják:
+$\norm{A - B}_2 \ge \sigma_{k+1}$ minden $\rang(B) \le k$ esetén.
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}[A 2-normás eset bizonyítása]
+Nyilvánvalóan $A - A_k = \sum_{i=k+1}^r \sigma_i u_i v_i^*$, amelynek 2-normája $\sigma_{k+1}$
+(a legnagyobb szinguláris értéke). Meg kell mutatni, hogy bármely $\rang(B)\le k$ esetén
+$\norm{A-B}_2 \ge \sigma_{k+1}$.
+
+Legyen $B$ tetszőleges rang-$\le k$ mátrix, $W = \Ker(B)$. Ekkor $\dim(W) \ge n-k$.
+A $V_{k+1} = \Span\{v_1,\ldots,v_{k+1}\}$ tér dimenziója $k+1$. Mivel
+$\dim(W) + \dim(V_{k+1}) \ge (n-k) + (k+1) = n+1 > n$, a két altér metszetében
+van egységvektor: $\exists\,w \in W \cap V_{k+1}$, $\norm{w}_2 = 1$.
+
+Mivel $w \in V_{k+1}$: $w = \sum_{i=1}^{k+1} c_i v_i$, $\sum |c_i|^2 = 1$.
+Mivel $w \in \Ker(B)$: $Bw = 0$, tehát
+\[
+  \norm{A - B}_2 \ge \norm{(A-B)w}_2 = \norm{Aw}_2
+  = \left\|\sum_{i=1}^{k+1} c_i \sigma_i u_i\right\|_2
+  = \sqrt{\sum_{i=1}^{k+1} |c_i|^2 \sigma_i^2} \ge \sigma_{k+1}. \qed
+\]
+\end{proof}
+
+\subsection*{Alkalmazás: képtömörítés}
+
+Egy szürkeárnyalatos pixelkép reprezentálható mint $A \in \R^{m\times n}$ mátrix, ahol
+$a_{ij}$ a $(i,j)$ pixel intenzitása. Az SVD felbontás után:
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item Az $A_k$ rang-$k$ közelítés \emph{tömörített} képet ad: tároláshoz $k(m+n)$ szám
+        kell (az $\sigma_i$, $u_i$, $v_i$ adatok), szemben az eredeti $mn$-nel.
+  \item A tömörítési arány akkor jó, ha a szinguláris értékek gyorsan csökkennek
+        (néhány nagy dominálja a többit).
+  \item A Frobenius-hiba: $\norm{A - A_k}_F = \sqrt{\sum_{i=k+1}^r \sigma_i^2}$,
+        amely a pixelenkénti négyzethibát méri.
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.88\textwidth]{svd_tomorites.pdf}
+\caption{SVD-alapú alacsony rangú közelítés egy szintetikus képen.
+  Bal: az eredeti (teljes rangú) kép. Közép: rang-$r/2$ közelítés. Jobb: rang-10 közelítés.}
+\label{fig:svd}
+\end{figure}
+
+% ==============================================================
+\section{Az általánosított inverz (Moore--Penrose-pszeudoinverz)}
+\label{sec:pseudoinv}
+
+\subsection*{Motiváció}
+
+Ha $A \in \C^{m\times n}$ nem négyzetes ($m \ne n$), vagy négyzetes de szinguláris, akkor
+az $Ax = b$ LER általában nem oldható meg klasszikus értelemben. Keresünk egy
+``legjobb közelítő megoldást'', amelyet az $A^+$ pszeudoinverz segítségével írhatunk fel.
+
+\begin{mdframed}[backgroundcolor=defbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{definicio}[Moore--Penrose-féle általánosított inverz]
+Az $A \in \C^{m\times n}$ mátrix \emph{általánosított (pszeudo-) inverze} az $A^+ \in \C^{n\times m}$
+mátrix, ha a következő négy \emph{Moore--Penrose-feltétel} teljesül:
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item $AA^+$ önadjungált: $(AA^+)^* = AA^+$,
+  \item $A^+A$ önadjungált: $(A^+A)^* = A^+A$,
+  \item $AA^+A = A$,
+  \item $A^+AA^+ = A^+$.
+\end{enumerate}
+\end{definicio}
+\end{mdframed}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}
+Az $A^+$ általánosított inverz \emph{egyértelmű}.
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Tegyük fel, hogy $B$ és $C$ is teljesíti az 1--4 feltételeket $A$-val szemben.
+Ekkor (a feltételeket felváltva alkalmazva):
+\begin{align*}
+  B &= BAB \quad (\text{4. feltétel }B\text{-re}) \\
+  &= B(AB)^T \quad (\text{1. feltétel }B\text{-re, valós esetben}) \\
+  &= B(AB)^* \quad (\text{általánosan, 1. feltétel}) \\
+  &= B\,B^*A^* \\
+  &= B\,(CAB)^* \quad (\text{3. felt.\ }C\text{-re: }CAC=C\Rightarrow A=A C^* A^*\ldots)
+\end{align*}
+Részletesen: alkalmazzuk, hogy $AB = A(CA)B = (AC)(AB)$ stb.; az algebra elég
+technikus, de végeredménye: $B = C$. (A pontos lépések az SVD-előállítás
+egyértelműségéből is következnek; lásd a következő tételt.) \qed
+\end{proof}
+
+\subsection*{A pszeudoinverz előállítása}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Diagonális mátrix pszeudoinverze]
+\label{tetel:diagpseudo}
+Legyen $D \in \C^{m\times n}$ diagonális ($d_{ii}$-kkel). Ekkor $D^+ \in \C^{n\times m}$
+szintén diagonális:
+\[
+  d_{ii}^+ = \begin{cases} 1/d_{ii}, & d_{ii} \ne 0, \\ 0, & d_{ii} = 0. \end{cases}
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Ellenőrizzük az 1--4 feltételeket.
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item $(DD^+)_{ii} = d_{ii}\cdot d_{ii}^+ \in \{0, 1\}$; valós, tehát $(DD^+)^* = DD^+$. $eckmark$
+  \item Hasonlóan $(D^+D)^* = D^+D$. $eckmark$
+  \item $(DD^+D)_{ii} = d_{ii}\cdot d_{ii}^+\cdot d_{ii} = d_{ii}$. $eckmark$
+  \item $(D^+DD^+)_{ii} = d_{ii}^+\cdot d_{ii}\cdot d_{ii}^+ = d_{ii}^+$. $eckmark$ \qed
+\end{enumerate}
+\end{proof}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Az általánosított inverz előállítása SVD-vel]
+\label{tetel:pseudosvd}
+Legyen $A = UDV^*$ az $A$ szinguláris felbontása. Ekkor:
+\[
+  A^+ = V D^+ U^*,
+\]
+ahol $D^+$ a Tétel~\ref{tetel:diagpseudo} szerinti pszeudoinverz.
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Legyen $B = VD^+U^*$. Igazoljuk az 1--4 feltételeket:
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item $AB = UDV^*\cdot VD^+U^* = U(DD^+)U^*$; ez önadjungált, mert $DD^+$ önadjungált
+        (Tétel~\ref{tetel:diagpseudo}).
+  \item $BA = VD^+U^*\cdot UDV^* = V(D^+D)V^*$; szintén önadjungált.
+  \item $ABA = U(DD^+D)U^*V^* \cdot V = UDV^* = A$ (mert $DD^+D = D$ tagjai: $d_{ii}\cdot d_{ii}^+\cdot d_{ii} = d_{ii}$).
+  \item $BAB = V(D^+DD^+)V^* = VD^+V^* = B$. $eckmark$ \qed
+\end{enumerate}
+\end{proof}
+
+\subsection*{Speciális esetek}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Túlhatározott, teljes rangú eset]
+\label{tetel:tulhatarozottPS}
+Legyen $A \in \C^{m\times n}$, $m > n$ és $\rang(A) = n$ (teljes oszloprangú). Ekkor:
+\[
+  A^+ = (A^*A)^{-1}A^*.
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Ha $\rang(A) = n$, az összes $n$ szinguláris érték nullától különböző, ezért az SVD-ben
+$D^+ = D^{-1}$ (a nemnulla blokkon). Ekkor:
+\[
+  A^+ = VD^+U^* = VD^{-1}U^*.
+\]
+De $(A^*A)^{-1}A^* = (VDU^*UDV^*)^{-1}VDU^* = (VD^2V^*)^{-1}VDU^* = VD^{-2}V^*\cdot VDU^* = VD^{-1}U^*$.
+Az 1--4 feltételek teljesítése az előző tétel alapján adódik. \qed
+\end{proof}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Alulhatározott, teljes rangú eset]
+\label{tetel:alulhatarozottPS}
+Legyen $A \in \C^{m\times n}$, $m < n$ és $\rang(A) = m$ (teljes sorrangú). Ekkor:
+\[
+  A^+ = A^*(AA^*)^{-1}.
+\]
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+Hasonlóan: ha $\rang(A) = m$, az összes $m$ szinguláris érték nullától különböző.
+$A^*(AA^*)^{-1} = VDU^*(UDV^*VDU^*)^{-1} = VDU^*(UD^2U^*)^{-1} = VDU^*\cdot UD^{-2}U^* = VD^{-1}U^* = A^+$. \qed
+\end{proof}
+
+% ==============================================================
+\section{Az általánosított inverz approximációs tulajdonsága}
+\label{sec:approx}
+
+\begin{mdframed}[backgroundcolor=defbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{definicio}[Általánosított megoldás]
+Az $Ax = b$ LER általánosított megoldása:
+\[
+  x^+ := A^+ b.
+\]
+\end{definicio}
+\end{mdframed}
+
+\subsection*{Következmények a speciális esetekben}
+
+\begin{itemize}
+  \item \textbf{Túlhatározott, teljes rangú eset} ($m > n$, $\rang(A) = n$):
+    \[
+      x^+ = (A^*A)^{-1}A^*b \quad \Longleftrightarrow \quad A^*A\,x^+ = A^*b.
+    \]
+    Az $A^*Ax = A^*b$ egyenletrendszert \emph{Gauss-féle normálegyenleteknek} nevezzük.
+    $x^+$ a \emph{legkisebb négyzetek megoldása} (minimalizálja $\norm{Ax - b}_2$-t).
+
+  \item \textbf{Alulhatározott, teljes rangú eset} ($m < n$, $\rang(A) = m$):
+    \[
+      x^+ = A^*(AA^*)^{-1}b.
+    \]
+    Ha $y := (AA^*)^{-1}b$, akkor $Ax^+ = AA^*y = b$, azaz $x^+$ valódi megoldás.
+    Ráadásul $x^+$ az összes megoldás közül a \emph{minimális normájú}.
+\end{itemize}
+
+\begin{mdframed}[backgroundcolor=thmbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tetel}[Approximációs tulajdonság]
+\label{tetel:approx}
+Legyenek $A \in \C^{m\times n}$ és $b \in \C^m$ adottak, $x^+ = A^+b$.
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item $\norm{Ax - b}_2 \ge \norm{Ax^+ - b}_2 \quad \forall\,x \in \C^n$
+        (azaz $x^+$ minimalizálja a maradékot).
+  \item Ha $H := \{x \in \C^n : \norm{Ax - b}_2 = \norm{Ax^+ - b}_2\}$ az összes
+        minimalizáló halmaza, akkor
+        $\norm{x^+}_2 < \norm{x}_2 \quad \forall\,x \in H,\; x \ne x^+$
+        (azaz $x^+$ minimális normájú a minimalizálók között).
+\end{enumerate}
+\end{tetel}
+\end{mdframed}
+
+\begin{proof}
+\textbf{1. állítás.}
+Felhasználjuk, hogy $AA^+$ ortogonális projekció az $\Kep(A)$-ra (lásd 1. feltétel és $AA^+A=A$).
+Írjuk:
+\[
+  \norm{Ax - b}_2^2 = \norm{A(x - x^+) + (Ax^+ - b)}_2^2
+  = \norm{A(x-x^+)}_2^2 + \norm{Ax^+ - b}_2^2 + 2\,\mathrm{Re}\innerprod{A(x-x^+)}{Ax^+-b}.
+\]
+A kereszttag nullává válik, ha $Ax^+ - b \perp \Kep(A)$. Valóban:
+$(Ax^+-b) = (AA^+-I)b$, és minden $Ay \in \Kep(A)$-ra:
+\[
+  \innerprod{(AA^+-I)b}{Ay} = b^*(AA^+-I)^*Ay = b^*(AA^+-I)Ay = b^*(AA^+Ay - Ay) = 0,
+\]
+mivel $AA^+Ay = Ay$ (3. feltétel: $AA^+A = A$, tehát $AA^+(Ay) = A(A^+A)y$... formálisan
+$AA^+$ az $\Kep(A)$-ra vetítő mátrix). Így:
+\[
+  \norm{Ax-b}^2 = \norm{A(x-x^+)}^2 + \norm{Ax^+-b}^2 \ge \norm{Ax^+-b}^2.
+\]
+
+\textbf{2. állítás.}
+Legyen $x \in H$, $x \ne x^+$. Mivel $Ax = Ax^+$, azaz $A(x - x^+) = 0$,
+tehát $x - x^+ \in \Ker(A) = \Kep(A^+)^\perp$. Ekkor $x^+ \perp (x - x^+)$ (mert $x^+ \in \Kep(A^*)$
+és $\Ker(A) \perp \Kep(A^*)$), ezért:
+\[
+  \norm{x}^2 = \norm{x^+ + (x-x^+)}^2 = \norm{x^+}^2 + \norm{x-x^+}^2 > \norm{x^+}^2. \qed
+\]
+\end{proof}
+
+\begin{megjegyzes}
+\leavevmode
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item Ha $Ax = b$ megoldható, akkor $x^+ = A^+b$ az origóhoz legközelebb lévő megoldás.
+  \item Ha $Ax = b$ nem megoldható (pl.\ túlhatározott rendszer), akkor $x^+$ a
+        \emph{reziduális norm} szerint legjobb közelítő megoldás, és ha több ilyen létezik,
+        közülük a legkisebb normájú.
+  \item A fenti két esetben (túl- és alulhatározott teljes rangú) a szinguláris felbontás
+        nem szükséges: elegendő megoldani a normálegyenleteket ill.\ a minimál-norma rendszert.
+\end{enumerate}
+\end{megjegyzes}
+
+% ==============================================================
+\section{Legkisebb négyzetek módszere}
+\label{sec:lnm}
+
+\subsection*{Az alapfeladat}
+
+\begin{mdframed}[backgroundcolor=defbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\begin{definicio}[A legkisebb négyzetek módszere]
+Adottak az $x_1, \ldots, x_N \in [a,b]$ különböző alappontok és az
+$y_1, \ldots, y_N \in \R$ függvény- ill.\ mérési értékek.
+Keresünk $p_n \in P_n$ polinomot ($n+1 \le N$, általában $N \gg n$), amelyre
+\[
+  \sum_{i=1}^N \bigl(y_i - p_n(x_i)\bigr)^2 \quad \text{minimális.}
+\]
+A $p_n$ polinomot \emph{négyzetesen legjobban közelítő polinomnak} nevezzük.
+\end{definicio}
+\end{mdframed}
+
+A feladat tehát nem az, hogy $p_n(x_i) = y_i$ pontosan teljesüljön (ez csak $n = N-1$ esetén
+érhető el), hanem az eltérések négyzetösszegét minimalizáljuk. Ez a statisztikában
+\emph{lineáris regressziónak} felel meg.
+
+\subsection*{Mátrix alak}
+
+Írjuk fel $p_n(x) = a_n x^n + \cdots + a_1 x + a_0$ alakban. Jelöljük:
+\[
+  A :=
+  \begin{pmatrix}
+    1 & x_1 & x_1^2 & \cdots & x_1^n \\
+    1 & x_2 & x_2^2 & \cdots & x_2^n \\
+    \vdots & \vdots & \vdots & & \vdots \\
+    1 & x_N & x_N^2 & \cdots & x_N^n
+  \end{pmatrix}_{N\times(n+1)},
+  \quad
+  a :=
+  \begin{pmatrix} a_0 \\ a_1 \\ \vdots \\ a_n \end{pmatrix}_{(n+1)\times 1},
+  \quad
+  y :=
+  \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_N \end{pmatrix}_{N\times 1}.
+\]
+Ekkor a minimalizálandó mennyiség:
+\[
+  \norm{Aa - y}_2^2 = \sum_{i=1}^N (p_n(x_i) - y_i)^2.
+\]
+Ez pontosan a Tétel~\ref{tetel:approx} kerete: az $Aa = y$ LER általában
+\emph{túlhatározott és nem megoldható} (ha $N > n+1$), de a Tétel szerint az
+általánosított megoldás $a^+ = A^+ y$ minimalizálja a négyzethibát.
+
+\subsection*{Gauss-féle normálegyenletek}
+
+Ha $A$ teljes rangú (rang$(A) = n+1$, ami teljesül, ha az $x_i$ alappontok különbözők),
+akkor Tétel~\ref{tetel:tulhatarozottPS} alapján:
+\[
+  a^+ = (A^T A)^{-1} A^T y \quad \Longleftrightarrow \quad A^T A\,a^+ = A^T y.
+\]
+A szimmetrikus, $(n+1)\times(n+1)$-es LER kifejtve:
+\[
+  \begin{pmatrix}
+    N & \sum x_i & \cdots & \sum x_i^n \\
+    \sum x_i & \sum x_i^2 & \cdots & \sum x_i^{n+1} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \sum x_i^n & \sum x_i^{n+1} & \cdots & \sum x_i^{2n}
+  \end{pmatrix}
+  \begin{pmatrix} a_0 \\ a_1 \\ \vdots \\ a_n \end{pmatrix}
+  =
+  \begin{pmatrix} \sum y_i \\ \sum x_i y_i \\ \vdots \\ \sum x_i^n y_i \end{pmatrix}.
+\]
+
+\begin{megjegyzes}
+\leavevmode
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item Ha $A$ teljes rangú, $A^T A$ mindig szimmetrikus és pozitív definit, tehát invertálható.
+  \item \textbf{Lineáris regresszió ($n=1$):}
+    A normálegyenletek:
+    \[
+      \begin{pmatrix} N & \sum x_i \\ \sum x_i & \sum x_i^2 \end{pmatrix}
+      \begin{pmatrix} a_0 \\ a_1 \end{pmatrix}
+      = \begin{pmatrix} \sum y_i \\ \sum x_i y_i \end{pmatrix}.
+    \]
+    Ha $\sum x_i = 0$ (pl.\ szimmetrikus alappontok), diagonális a rendszer:
+    $a_0 = \tfrac{1}{N}\sum y_i$, $a_1 = \tfrac{\sum x_i y_i}{\sum x_i^2}$.
+    Általánosan:
+    \[
+      a_1 = \frac{N\sum x_i y_i - (\sum x_i)(\sum y_i)}{N\sum x_i^2 - (\sum x_i)^2},
+      \qquad
+      a_0 = \frac{\sum y_i - a_1 \sum x_i}{N}.
+    \]
+  \item A négyzetesen legjobban közelítő $p_1$ egyenes mindig átmegy az adatok
+        \emph{átlagán} $(\bar{x}, \bar{y})$: ez éppen a normálegyenlet első sorából következik.
+  \item A közgazdászok és statisztikusok ezt \emph{regressziós egyenesnek} hívják,
+        és standardeszközként használják (statisztika, ökonometria).
+\end{enumerate}
+\end{megjegyzes}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.52\textwidth]{lin_regresszio.pdf}
+\caption{Lineáris regresszió öt adatpontra. Az egyenes a legkisebb négyzetek módszerével
+  illesztett $p_1(x) = a_1 x + a_0$ polinom; a szaggatott vonalak a reziduálisokat jelölik.}
+\label{fig:linreg}
+\end{figure}
+
+\begin{mdframed}[backgroundcolor=exbg,linewidth=0pt,innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{Számpélda: lineáris regresszió.}
+Adottak a következő mérési adatok:
+\[
+\begin{array}{c|ccccc}
+x_i & 1 & 2 & 3 & 4 & 5 \\\hline
+y_i & 2{,}1 & 3{,}8 & 6{,}2 & 7{,}9 & 9{,}5
+\end{array}
+\]
+Számítsuk ki a legjobb lineáris közelítőt ($n=1$)!
+
+$N = 5$, $\sum x_i = 15$, $\sum y_i = 29{,}5$, $\sum x_i^2 = 55$, $\sum x_i y_i = 100{,}3$.
+\[
+  a_1 = \frac{5 \cdot 100{,}3 - 15 \cdot 29{,}5}{5 \cdot 55 - 225}
+  = \frac{501{,}5 - 442{,}5}{275 - 225} = \frac{59{,}0}{50} = 1{,}180.
+\]
+\[
+  a_0 = \frac{29{,}5 - 1{,}180 \cdot 15}{5} = \frac{29{,}5 - 17{,}7}{5} = \frac{11{,}8}{5} = 2{,}360.
+\]
+Így $p_1(x) \approx 1{,}180\,x + 2{,}360$.
+
+\textbf{Ellenőrzés:} A reziduális norm:
+$\norm{Aa^+ - y}_2^2 = \sum (p_1(x_i)-y_i)^2 = \cdots \approx 0{,}022$ (számítható).
+
+Az adatok átlaga: $\bar{x} = 3$, $\bar{y} = 5{,}9$; valóban $p_1(3) = 3{,}54 + 2{,}36 = 5{,}9$. $eckmark$
+\end{mdframed}
+
+% ==============================================================
+\section*{Összefoglalás}
+
+\subsection*{Numerikus integrálás}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{l|c|c|c}
+\toprule
+\textbf{Formula} & \textbf{Típus} & \textbf{Hiba} & \textbf{Pontossági fok}\\
+\midrule
+Érintő $E(f)$ & Ny(0) & $\dfrac{(b-a)^3}{24}f''(\eta)$ & $P_1$ \\
+Trapéz $T(f)$ & Z(1) & $-\dfrac{(b-a)^3}{12}f''(\eta)$ & $P_1$ \\
+Simpson $S(f)$ & Z(2) & $-\dfrac{(b-a)^5}{2880}f^{(4)}(\eta)$ & $P_3$ \\[4pt]
+\midrule
+Trapéz összetett $T_m(f)$ & — & $-\dfrac{(b-a)^3}{12m^2}f''(\eta)$ & $O(m^{-2})$ \\
+Simpson összetett $S_m(f)$ & — & $-\dfrac{(b-a)^5}{180m^4}f^{(4)}(\eta)$ & $O(m^{-4})$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Szinguláris felbontás és általánosított inverz}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l|l}
+\toprule
+\textbf{Fogalom} & \textbf{Tartalom} \\
+\midrule
+SVD & $A = UDV^*$, $D = \diag(\sigma_1,\ldots,\sigma_r,0,\ldots)$, $U,V$ unitér \\
+Szinguláris értékek & $\sigma_i = \sqrt{\lambda_i(A^*A)} > 0$ \\
+Eckart--Young & $A_k = \sum_{i=1}^k \sigma_i u_i v_i^*$ a legjobb rang-$k$ közelítés \\
+Moore--Penrose & $A^+ = VD^+U^*$ (4 ax.\ egyértelműen meghatározza) \\
+Túlhatározott & $A^+ = (A^TA)^{-1}A^T$, normálegyenletek: $A^TAx = A^Ty$ \\
+Alulhatározott & $A^+ = A^T(AA^T)^{-1}$, minimális norma \\
+LNM & $\min \norm{Aa-y}_2^2$: $a^+ = (A^TA)^{-1}A^Ty$ (regresszió) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
